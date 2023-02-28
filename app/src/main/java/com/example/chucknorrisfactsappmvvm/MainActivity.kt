@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = (application as FactApp).viewModel
         val textView = binding.textView
         val button = binding.actionButton
         val progressBar = binding.progressBar
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.init(object : TextCallback {
-            override fun provideText(text: String) {
+            override fun provideText(text: String) = runOnUiThread {
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
                 textView.text = text
