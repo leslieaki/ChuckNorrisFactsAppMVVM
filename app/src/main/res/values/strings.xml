@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ChuckNorrisFactsAppMVVM</string>
+    <string name="app_name">Chuck Norris</string>
+    <string name="get_fact">get fact</string>
 </resources>
