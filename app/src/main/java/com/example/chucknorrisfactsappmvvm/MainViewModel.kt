@@ -1,6 +1,6 @@
 package com.example.chucknorrisfactsappmvvm
 
-class MainViewModel(private val repository: Repository<Any, Any>) {
+class MainViewModel(private val repository: Repository<Fact, Error>) {
 
     private var textCallback: TextCallback = TextCallback.Empty()
 
@@ -10,13 +10,13 @@ class MainViewModel(private val repository: Repository<Any, Any>) {
 
     fun init(textCallback: TextCallback) {
         this.textCallback = textCallback
-        repository.init(object : ResultCallBack<Any, Any> {
-            override fun provideSuccess(data: Any) {
-                textCallback.provideText("success")
+        repository.init(object : ResultCallBack<Fact, Error> {
+            override fun provideSuccess(data: Fact) {
+                textCallback.provideText(data.getFactUi())
             }
 
-            override fun provideError(error: Any) {
-                textCallback.provideText("error")
+            override fun provideError(error: Error) {
+                textCallback.provideText(error.message())
             }
 
         })

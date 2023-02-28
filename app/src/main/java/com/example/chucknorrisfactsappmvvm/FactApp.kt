@@ -8,8 +8,6 @@ class FactApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        viewModel = MainViewModel(
-            FakeRepository()
-        )
+        viewModel = MainViewModel(FakeRepository(ManageResources.Base(this)))
     }
 }
