@@ -1,5 +1,6 @@
 package com.example.chucknorrisfactsappmvvm
 
+import com.example.chucknorrisfactsappmvvm.presentation.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -8,7 +9,7 @@ class MainViewModelTest {
 
     @Test
     fun test_success() {
-        val repository = FakeRepository()
+        val repository = com.example.chucknorrisfactsappmvvm.presentation.FakeRepository()
         repository.returnSuccess = true
         val viewModel = MainViewModel(repository)
         viewModel.init(object : TextCallback {
@@ -22,7 +23,7 @@ class MainViewModelTest {
 
     @Test
     fun test_error() {
-        val repository = FakeRepository()
+        val repository = com.example.chucknorrisfactsappmvvm.presentation.FakeRepository()
         repository.returnSuccess = false
         val viewModel = MainViewModel(repository)
         viewModel.init(object : TextCallback {
@@ -35,10 +36,11 @@ class MainViewModelTest {
     }
 }
 
-private class FakeRepository : Repository<Fact, Error> {
+private class FakeRepository :
+    Repository<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error> {
 
     var returnSuccess = true
-    private var callback: ResultCallBack<Fact, Error>? = null
+    private var callback: ResultCallBack<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error>? = null
 
     override fun fetch() {
         if (returnSuccess)
@@ -51,12 +53,12 @@ private class FakeRepository : Repository<Fact, Error> {
         callback = null
     }
 
-    override fun init(callback: ResultCallBack<Fact, Error>) {
+    override fun init(callback: ResultCallBack<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error>) {
         this.callback = callback
     }
 }
 
-private class FakeError : Error {
+private class FakeError : com.example.chucknorrisfactsappmvvm.presentation.Error {
 
     override fun message(): String {
         return "fake error"

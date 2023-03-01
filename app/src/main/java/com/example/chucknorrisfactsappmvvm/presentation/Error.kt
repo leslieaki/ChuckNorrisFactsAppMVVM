@@ -1,6 +1,7 @@
-package com.example.chucknorrisfactsappmvvm
+package com.example.chucknorrisfactsappmvvm.presentation
 
 import androidx.annotation.StringRes
+import com.example.chucknorrisfactsappmvvm.R
 
 interface Error {
 

@@ -1,4 +1,4 @@
-package com.example.chucknorrisfactsappmvvm
+package com.example.chucknorrisfactsappmvvm.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

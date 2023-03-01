@@ -1,4 +1,4 @@
-package com.example.chucknorrisfactsappmvvm
+package com.example.chucknorrisfactsappmvvm.presentation
 
 class MainViewModel(private val repository: Repository<Fact, Error>) {
 

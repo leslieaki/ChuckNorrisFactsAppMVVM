@@ -1,4 +1,4 @@
-package com.example.chucknorrisfactsappmvvm
+package com.example.chucknorrisfactsappmvvm.presentation
 
 import android.content.Context
 import androidx.annotation.StringRes
