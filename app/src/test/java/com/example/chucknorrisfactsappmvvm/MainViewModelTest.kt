@@ -9,7 +9,10 @@ class MainViewModelTest {
 
     @Test
     fun test_success() {
-        val repository = com.example.chucknorrisfactsappmvvm.presentation.FakeRepository()
+        val repository = com.example.chucknorrisfactsappmvvm.presentation.BaseRepository(
+            FactService.Base(),
+            ManageResources.Base()
+        )
         repository.returnSuccess = true
         val viewModel = MainViewModel(repository)
         viewModel.init(object : TextCallback {
@@ -40,7 +43,8 @@ private class FakeRepository :
     Repository<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error> {
 
     var returnSuccess = true
-    private var callback: ResultCallBack<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error>? = null
+    private var callback: ResultCallBack<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error>? =
+        null
 
     override fun fetch() {
         if (returnSuccess)

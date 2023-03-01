@@ -16,7 +16,7 @@ class FakeRepository(
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 if (count % 2 == 1) {
-                    callback?.provideSuccess(Fact("fake count $count", "fact"))
+                    callback?.provideSuccess(Fact("fact"))
                 } else if (count % 3 == 0) {
                     callback?.provideError(noConnection)
                 } else {
