@@ -17,9 +17,12 @@
         tools:text="Fact here" />
 
     <ProgressBar
+        android:layout_marginVertical="@dimen/margin_vertical_medium"
         android:id="@+id/progressBar"
+        android:indeterminateTint="@color/cream"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
+        tools:visibility="visible"
         android:layout_height="wrap_content"
         android:visibility="invisible" />
 

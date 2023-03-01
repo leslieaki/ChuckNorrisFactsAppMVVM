@@ -18,7 +18,11 @@ class BaseRepository(
         factService.fact().enqueue(object : Callback<FactCloud> {
             override fun onResponse(call: Call<FactCloud>, response: Response<FactCloud>) {
                 if (response.isSuccessful) {
-                    callback?.provideSuccess(response.body()!!.toFact())
+                    val body = response.body()
+                    if (body == null)
+                        callback?.provideError(serviceError)
+                    else
+                        callback?.provideSuccess(body.toFact())
                 } else {
                     callback?.provideError(serviceError)
                 }
