@@ -20,6 +20,6 @@ data class FactCloud(
     private val value: String
 ) {
     fun toFact(): Fact {
-        return Fact( value)
+        return Fact(value)
     }
 }
