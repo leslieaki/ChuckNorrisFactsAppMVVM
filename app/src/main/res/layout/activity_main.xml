@@ -7,54 +7,64 @@
     tools:context=".presentation.MainActivity">
 
     <LinearLayout
+        android:background="@color/cream"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="4"
-        android:background="@color/cream"
         android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/image_size"
+            android:layout_height="@dimen/image_size"
             android:background="@drawable/circle_linear_layout"
             android:contentDescription="@string/chuck_norris"
             android:padding="@dimen/small_padding"
             android:src="@drawable/chuck" />
 
         <TextView
-            style="@style/text_common"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_horizontal_large_size"
             android:fontFamily="@font/sans_pro_bold"
-            android:text="@string/wanna_get_some_interesting_fact_about_chuck_norris" />
+            android:gravity="center"
+            android:text="@string/wanna_get_some_interesting_fact_about_chuck_norris"
+            android:textColor="@color/white"
+            android:textSize="@dimen/medium_size" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/button_radius"
+            android:backgroundTint="@color/white"
             android:fontFamily="@font/sans_pro_italic"
-            android:text="@string/so_press_the_button_then" />
+            android:paddingHorizontal="10dp"
+            android:text="@string/so_press_the_button_then"
+            android:textColor="@color/dark_cream"
+            android:textFontWeight="600"
+            android:textSize="@dimen/pre_medium_size" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:paddingHorizontal="@dimen/margin_horizontal_large_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-20dp"
         android:layout_weight="7"
         android:background="@drawable/circle_linear_layout"
-        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView"
-            style="@style/text_common"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_large_size"
+            android:layout_height="0dp"
+            android:layout_gravity="start"
+            android:textColor="@color/dark_cream"
+            android:layout_weight="1"
             android:fontFamily="@font/sans_pro_bold"
             android:gravity="center"
+            android:textSize="@dimen/medium_size"
             tools:text="Fact here" />
 
         <ProgressBar
@@ -68,14 +78,26 @@
             tools:visibility="visible" />
 
 
+        <CheckBox
+            android:id="@+id/showFavoriteCheckbox"
+            android:text="@string/show_favorite_joke"
+            android:textColor="@color/cream"
+            android:fontFamily="@font/sans_pro_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/cream"
+            android:layout_gravity="end"/>
+
         <Button
             android:id="@+id/actionButton"
-            style="@style/text_common"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_horizontal_large_size"
             android:background="@drawable/button_radius"
-            android:text="@string/get_fact" />
+            android:fontFamily="@font/sans_pro_bold"
+            android:layout_marginVertical="@dimen/margin_horizontal_large_size"
+            android:gravity="center"
+            android:text="@string/get_fact"
+            android:textSize="@dimen/medium_size" />
 
     </LinearLayout>
 </LinearLayout>
