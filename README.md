@@ -1,4 +1,4 @@
 # ChuckNorrisFactsAppMVVM
 App which provides you interesting facts about famous cinema character Chuck Norris. All the wishes and remember: Chuck sees everything!
 
-![Screenshot (2964)](https://user-images.githubusercontent.com/99660044/222419359-47f05418-8fb4-4755-862b-421e8d36cf2d.png)
+![chuck](https://user-images.githubusercontent.com/99660044/222420547-cb050388-ef6d-4847-934f-86271841dfac.png)
