@@ -26,8 +26,7 @@ class FactApp : Application() {
                     retrofit.create(FactService::class.java),
                     manageResources
                 ),
-                CacheDataSource.Fake(manageResources),
-                manageResources
+                CacheDataSource.Fake(manageResources)
             )
         )
     }

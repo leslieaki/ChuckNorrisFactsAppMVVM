@@ -10,8 +10,7 @@ import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 
 class BaseRepository(
     private val cloudDataSource: CloudDataSource,
-    private val cacheDataSource: CacheDataSource,
-    private val manageResources: ManageResources
+    private val cacheDataSource: CacheDataSource
 ) : Repository<FactUi, Error> {
 
     private var callback: ResultCallBack<FactUi, Error>? = null
@@ -22,6 +21,7 @@ class BaseRepository(
         if (getFactFromCache) {
             cacheDataSource.fetch(object : FactCacheCallback {
                 override fun provideFact(fact: FactCloud) {
+                    factCloudCached = fact
                     callback?.provideSuccess(fact.toFavoriteUi())
                 }
 
