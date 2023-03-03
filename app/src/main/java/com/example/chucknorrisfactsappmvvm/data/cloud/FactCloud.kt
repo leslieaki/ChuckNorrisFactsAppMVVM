@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 data class FactCloud(
     @SerializedName("categories")
-    private val categories: String,
+    private val categories: List<Any>,
     @SerializedName("created_at")
     private val created_at: String,
     @SerializedName("icon_url")

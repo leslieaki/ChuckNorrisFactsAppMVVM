@@ -13,8 +13,10 @@ interface CacheDataSource {
 
     class Fake(manageResources: ManageResources) : CacheDataSource {
 
-        private val error: Error =
+        private val error: Error by lazy {
             Error.NoFavoriteFact(manageResources)
+        }
+
         private val map = mutableMapOf<String, FactCloud>()
 
 
@@ -28,15 +30,21 @@ interface CacheDataSource {
             }
         }
 
+        private var count = 0
+
         override fun fetch(factCacheCallback: FactCacheCallback) {
             if (map.isEmpty())
                 factCacheCallback.provideError(error)
             else {
-                factCacheCallback.provideFact(map.toList()[0].second)
+                if (++count == map.size) count = 0
+                factCacheCallback.provideFact(
+                    map.toList()[count].second
+                )
             }
         }
     }
 }
+
 
 interface FactCacheCallback : ProvideError {
     fun provideFact(fact: FactCloud)

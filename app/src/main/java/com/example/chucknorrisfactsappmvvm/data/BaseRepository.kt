@@ -6,10 +6,12 @@ import com.example.chucknorrisfactsappmvvm.data.cloud.CloudDataSource
 import com.example.chucknorrisfactsappmvvm.data.cloud.FactCloud
 import com.example.chucknorrisfactsappmvvm.data.cloud.FactCloudCallback
 import com.example.chucknorrisfactsappmvvm.presentation.FactUi
+import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 
 class BaseRepository(
     private val cloudDataSource: CloudDataSource,
     private val cacheDataSource: CacheDataSource,
+    private val manageResources: ManageResources
 ) : Repository<FactUi, Error> {
 
     private var callback: ResultCallBack<FactUi, Error>? = null

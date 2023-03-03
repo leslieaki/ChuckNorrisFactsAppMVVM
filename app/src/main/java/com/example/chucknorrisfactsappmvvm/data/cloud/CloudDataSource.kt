@@ -25,6 +25,7 @@ interface CloudDataSource {
 
         override fun fetch(cloudCallback: FactCloudCallback) {
             factService.fact().enqueue(object : Callback<FactCloud> {
+
                 override fun onResponse(call: Call<FactCloud>, response: Response<FactCloud>) {
                     if (response.isSuccessful) {
                         val body = response.body()
@@ -34,7 +35,6 @@ interface CloudDataSource {
                             cloudCallback.provideFactCloud(body)
                     } else
                         cloudCallback.provideError(serviceError)
-
                 }
 
                 override fun onFailure(call: Call<FactCloud>, t: Throwable) {
