@@ -8,7 +8,7 @@ abstract class FactUi(
     @DrawableRes private val iconResId: Int
 ) {
 
-    fun show(textCallback: TextCallback) = with(textCallback) {
+    fun show(factUiCallback: FactUiCallback) = with(factUiCallback) {
         provideText(fact)
         provideIconResId(iconResId)
     }

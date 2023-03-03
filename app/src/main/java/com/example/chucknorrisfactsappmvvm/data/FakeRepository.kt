@@ -28,4 +28,12 @@ class FakeRepository(
     override fun init(callback: ResultCallBack<FactUi, Error>) {
         this.callback = callback
     }
+
+    override fun changeFactStatus(resultCallBack: ResultCallBack<FactUi, Error>) {
+        //todo
+    }
+
+    override fun chooseFavorites(favorites: Boolean) {
+
+    }
 }

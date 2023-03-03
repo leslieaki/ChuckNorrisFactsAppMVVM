@@ -1,6 +1,9 @@
 package com.example.chucknorrisfactsappmvvm.data
 
 import android.app.Application
+import com.example.chucknorrisfactsappmvvm.data.cache.CacheDataSource
+import com.example.chucknorrisfactsappmvvm.data.cloud.CloudDataSource
+import com.example.chucknorrisfactsappmvvm.data.cloud.FactService
 import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 import retrofit2.Retrofit
@@ -16,13 +19,16 @@ class FactApp : Application() {
             .baseUrl("https://api.chucknorris.io/jokes/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+        val manageResources = ManageResources.Base(this)
         viewModel = MainViewModel(
-            FakeRepository(
-                ManageResources.Base(this)
+            BaseRepository(
+                CloudDataSource.Base(
+                    retrofit.create(FactService::class.java),
+                    manageResources
+                ),
+                CacheDataSource.Fake(manageResources),
+                manageResources
             )
-//          BaseRepository (
-//          retrofit.create(FactService::class.java),
-//          ManageResources.Base(this)
         )
     }
 }

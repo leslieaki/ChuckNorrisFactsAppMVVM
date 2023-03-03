@@ -1,5 +1,7 @@
 package com.example.chucknorrisfactsappmvvm.data
 
+import com.example.chucknorrisfactsappmvvm.presentation.FactUi
+
 interface Repository<S, E> {
 
     fun fetch()
@@ -8,6 +10,9 @@ interface Repository<S, E> {
 
     fun init(callback: ResultCallBack<S, E>)
 
+    abstract fun changeFactStatus(resultCallBack: ResultCallBack<FactUi, Error>)
+
+    abstract fun chooseFavorites(favorites: Boolean)
 }
 
 interface ResultCallBack<S, E> {

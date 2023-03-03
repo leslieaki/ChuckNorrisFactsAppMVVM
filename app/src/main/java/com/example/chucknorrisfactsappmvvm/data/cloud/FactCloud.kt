@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 data class FactCloud(
     @SerializedName("categories")
-    private val categories: List<Any>,
+    private val categories: String,
     @SerializedName("created_at")
     private val created_at: String,
     @SerializedName("icon_url")
@@ -21,9 +21,9 @@ data class FactCloud(
     @SerializedName("value")
     private val value: String
 ) {
-    fun toFact(): FactUi {
-        return FactUi.Base(value)
-    }
+    fun toUi(): FactUi = FactUi.Base(value)
+
+    fun toFavoriteUi(): FactUi = FactUi.Favorite(value)
 
     fun change(cacheDataSource: CacheDataSource): FactUi = cacheDataSource.addOrRemove(id, this)
 }

@@ -1,8 +1,8 @@
 package com.example.chucknorrisfactsappmvvm.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.example.chucknorrisfactsappmvvm.data.FactApp
 import com.example.chucknorrisfactsappmvvm.databinding.ActivityMainBinding
 
@@ -21,11 +21,11 @@ class MainActivity : AppCompatActivity() {
         viewModel = (application as FactApp).viewModel
 
         binding.showFavoriteCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.changeFavorite(isChecked)
+            viewModel.chooseFavorite(isChecked)
         }
 
         binding.favoriteImageButton.setOnClickListener {
-            //todo
+            viewModel.changeFactStatus()
         }
 
         button.setOnClickListener {
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.getFact()
         }
 
-        viewModel.init(object : TextCallback {
+        viewModel.init(object : FactUiCallback {
             override fun provideText(text: String) = runOnUiThread {
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE

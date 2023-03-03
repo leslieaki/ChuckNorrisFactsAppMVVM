@@ -8,4 +8,5 @@
     <string name="so_press_the_button_then">So, press the button, then!</string>
     <string name="show_favorite_joke">favorite fact</string>
     <string name="icon_favorite">icon_favorite</string>
+    <string name="no_favorite_fact">No favorites fact. Click on heart to add one</string>
 </resources>

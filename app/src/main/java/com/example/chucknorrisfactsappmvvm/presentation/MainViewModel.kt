@@ -7,16 +7,17 @@ import com.example.chucknorrisfactsappmvvm.data.ResultCallBack
 
 class MainViewModel(private val repository: Repository<FactUi, Error>) {
 
-    private var textCallback: TextCallback = TextCallback.Empty()
+    private var factUiCallback: FactUiCallback = FactUiCallback.Empty()
+
     private val resultCallBack = object : ResultCallBack<FactUi, Error> {
 
-        override fun provideSuccess(data: FactUi) = data.show(textCallback)
+        override fun provideSuccess(data: FactUi) = data.show(factUiCallback)
 
-        override fun provideError(error: Error) = FactUi.Failed(error.message()).show(textCallback)
+        override fun provideError(error: Error) = FactUi.Failed(error.message()).show(factUiCallback)
     }
 
-    fun init(textCallback: TextCallback) {
-        this.textCallback = textCallback
+    fun init(factUiCallback: FactUiCallback) {
+        this.factUiCallback = factUiCallback
         repository.init(resultCallBack)
     }
 
@@ -25,22 +26,26 @@ class MainViewModel(private val repository: Repository<FactUi, Error>) {
     }
 
     fun clear() {
-        textCallback = TextCallback.Empty()
+        factUiCallback = FactUiCallback.Empty()
         repository.clear()
     }
 
-    fun changeFavorite(isChecked: Boolean) {
+    fun chooseFavorite(favorites: Boolean) {
+        repository.chooseFavorites(favorites)
+    }
 
+    fun changeFactStatus() {
+        repository.changeFactStatus(resultCallBack)
     }
 }
 
-interface TextCallback {
+interface FactUiCallback {
 
     fun provideText(text: String)
 
     fun provideIconResId(@DrawableRes iconResId: Int)
 
-    class Empty : TextCallback {
+    class Empty : FactUiCallback {
 
         override fun provideText(text: String) = Unit
 

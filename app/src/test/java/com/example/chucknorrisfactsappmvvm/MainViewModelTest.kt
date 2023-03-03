@@ -17,7 +17,7 @@ class MainViewModelTest {
         )
         repository.returnSuccess = true
         val viewModel = MainViewModel(repository)
-        viewModel.init(object : TextCallback {
+        viewModel.init(object : FactUiCallback {
             override fun provideText(text: String) {
                 assertEquals("fake fact 1" + "\n" + "fact", text)
             }
@@ -31,7 +31,7 @@ class MainViewModelTest {
         val repository = com.example.chucknorrisfactsappmvvm.data.FakeRepository()
         repository.returnSuccess = false
         val viewModel = MainViewModel(repository)
-        viewModel.init(object : TextCallback {
+        viewModel.init(object : FactUiCallback {
             override fun provideText(text: String) {
                 assertEquals("fake error", text)
             }

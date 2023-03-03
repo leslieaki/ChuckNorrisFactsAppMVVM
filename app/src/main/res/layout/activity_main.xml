@@ -91,7 +91,7 @@
                 android:layout_weight="10"
                 android:background="@color/white"
                 android:contentDescription="@string/icon_favorite"
-                android:src="@drawable/ic_favorite_selected_24" />
+                android:src="@drawable/ic_favorite_unselected_24" />
 
             <CheckBox
                 android:id="@+id/showFavoriteCheckbox"
