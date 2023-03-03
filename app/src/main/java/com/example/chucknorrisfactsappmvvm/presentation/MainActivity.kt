@@ -3,6 +3,7 @@ package com.example.chucknorrisfactsappmvvm.presentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.chucknorrisfactsappmvvm.data.FactApp
 import com.example.chucknorrisfactsappmvvm.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -12,12 +13,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        viewModel = (application as FactApp).viewModel
         val textView = binding.textView
         val button = binding.actionButton
         val progressBar = binding.progressBar
+        setContentView(binding.root)
+
+        viewModel = (application as FactApp).viewModel
+
+        binding.showFavoriteCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.changeFavorite(isChecked)
+        }
+
+        binding.favoriteImageButton.setOnClickListener {
+            //todo
+        }
 
         button.setOnClickListener {
             button.isEnabled = false
@@ -30,6 +39,10 @@ class MainActivity : AppCompatActivity() {
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
                 textView.text = text
+            }
+
+            override fun provideIconResId(iconResId: Int) = runOnUiThread {
+                binding.favoriteImageButton.setImageResource(iconResId)
             }
         })
     }

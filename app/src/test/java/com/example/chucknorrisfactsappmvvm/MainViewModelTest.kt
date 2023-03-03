@@ -1,5 +1,7 @@
 package com.example.chucknorrisfactsappmvvm
 
+import com.example.chucknorrisfactsappmvvm.data.*
+import com.example.chucknorrisfactsappmvvm.data.cloud.FactService
 import com.example.chucknorrisfactsappmvvm.presentation.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -9,7 +11,7 @@ class MainViewModelTest {
 
     @Test
     fun test_success() {
-        val repository = com.example.chucknorrisfactsappmvvm.presentation.BaseRepository(
+        val repository = BaseRepository(
             FactService.Base(),
             ManageResources.Base()
         )
@@ -26,7 +28,7 @@ class MainViewModelTest {
 
     @Test
     fun test_error() {
-        val repository = com.example.chucknorrisfactsappmvvm.presentation.FakeRepository()
+        val repository = com.example.chucknorrisfactsappmvvm.data.FakeRepository()
         repository.returnSuccess = false
         val viewModel = MainViewModel(repository)
         viewModel.init(object : TextCallback {
@@ -40,15 +42,15 @@ class MainViewModelTest {
 }
 
 private class FakeRepository :
-    Repository<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error> {
+    Repository<FactUi, Error> {
 
     var returnSuccess = true
-    private var callback: ResultCallBack<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error>? =
+    private var callback: ResultCallBack<FactUi, Error>? =
         null
 
     override fun fetch() {
         if (returnSuccess)
-            callback?.provideSuccess(Fact("fake fact 1", "fact"))
+            callback?.provideSuccess(FactUi("fake fact 1", "fact"))
         else
             callback?.provideError(FakeError())
     }
@@ -57,12 +59,12 @@ private class FakeRepository :
         callback = null
     }
 
-    override fun init(callback: ResultCallBack<Fact, com.example.chucknorrisfactsappmvvm.presentation.Error>) {
+    override fun init(callback: ResultCallBack<FactUi, Error>) {
         this.callback = callback
     }
 }
 
-private class FakeError : com.example.chucknorrisfactsappmvvm.presentation.Error {
+private class FakeError : Error {
 
     override fun message(): String {
         return "fake error"

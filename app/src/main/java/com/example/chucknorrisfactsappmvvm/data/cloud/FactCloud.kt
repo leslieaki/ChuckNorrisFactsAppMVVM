@@ -1,5 +1,7 @@
-package com.example.chucknorrisfactsappmvvm.presentation
+package com.example.chucknorrisfactsappmvvm.data.cloud
 
+import com.example.chucknorrisfactsappmvvm.data.cache.CacheDataSource
+import com.example.chucknorrisfactsappmvvm.presentation.FactUi
 import com.google.gson.annotations.SerializedName
 
 
@@ -19,7 +21,9 @@ data class FactCloud(
     @SerializedName("value")
     private val value: String
 ) {
-    fun toFact(): Fact {
-        return Fact(value)
+    fun toFact(): FactUi {
+        return FactUi.Base(value)
     }
+
+    fun change(cacheDataSource: CacheDataSource): FactUi = cacheDataSource.addOrRemove(id, this)
 }

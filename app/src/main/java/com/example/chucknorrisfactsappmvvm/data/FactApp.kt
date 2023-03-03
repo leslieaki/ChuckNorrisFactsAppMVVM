@@ -1,6 +1,8 @@
-package com.example.chucknorrisfactsappmvvm.presentation
+package com.example.chucknorrisfactsappmvvm.data
 
 import android.app.Application
+import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel
+import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -15,10 +17,12 @@ class FactApp : Application() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         viewModel = MainViewModel(
-            BaseRepository(
-                retrofit.create(FactService::class.java),
+            FakeRepository(
                 ManageResources.Base(this)
             )
+//          BaseRepository (
+//          retrofit.create(FactService::class.java),
+//          ManageResources.Base(this)
         )
     }
 }

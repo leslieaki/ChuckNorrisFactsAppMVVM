@@ -1,4 +1,4 @@
-package com.example.chucknorrisfactsappmvvm.presentation
+package com.example.chucknorrisfactsappmvvm.data
 
 interface Repository<S, E> {
 

@@ -1,7 +1,8 @@
-package com.example.chucknorrisfactsappmvvm.presentation
+package com.example.chucknorrisfactsappmvvm.data
 
 import androidx.annotation.StringRes
 import com.example.chucknorrisfactsappmvvm.R
+import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 
 interface Error {
 

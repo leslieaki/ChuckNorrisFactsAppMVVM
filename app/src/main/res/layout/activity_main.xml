@@ -7,10 +7,10 @@
     tools:context=".presentation.MainActivity">
 
     <LinearLayout
-        android:background="@color/cream"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="4"
+        android:background="@color/cream"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -47,25 +47,25 @@
     </LinearLayout>
 
     <LinearLayout
-        android:paddingHorizontal="@dimen/margin_horizontal_large_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-20dp"
         android:layout_weight="7"
         android:background="@drawable/circle_linear_layout"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/margin_horizontal_large_size">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_gravity="start"
-            android:textColor="@color/dark_cream"
-            android:layout_weight="1"
+            android:layout_weight="7"
             android:fontFamily="@font/sans_pro_bold"
-            android:gravity="center"
+            android:gravity="center|bottom"
+            android:textColor="@color/dark_cream"
             android:textSize="@dimen/medium_size"
             tools:text="Fact here" />
+
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -78,23 +78,41 @@
             tools:visibility="visible" />
 
 
-        <CheckBox
-            android:id="@+id/showFavoriteCheckbox"
-            android:text="@string/show_favorite_joke"
-            android:textColor="@color/cream"
-            android:fontFamily="@font/sans_pro_bold"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/cream"
-            android:layout_gravity="end"/>
+            android:orientation="horizontal">
+
+
+            <ImageButton
+                android:id="@+id/favoriteImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:background="@color/white"
+                android:contentDescription="@string/icon_favorite"
+                android:src="@drawable/ic_favorite_selected_24" />
+
+            <CheckBox
+                android:id="@+id/showFavoriteCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:buttonTint="@color/cream"
+                android:fontFamily="@font/sans_pro_bold"
+                android:text="@string/show_favorite_joke"
+                android:textColor="@color/cream" />
+
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/actionButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_horizontal_large_size"
             android:background="@drawable/button_radius"
             android:fontFamily="@font/sans_pro_bold"
-            android:layout_marginVertical="@dimen/margin_horizontal_large_size"
             android:gravity="center"
             android:text="@string/get_fact"
             android:textSize="@dimen/medium_size" />

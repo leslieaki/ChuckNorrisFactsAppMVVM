@@ -1,4 +1,4 @@
-package com.example.chucknorrisfactsappmvvm.presentation
+package com.example.chucknorrisfactsappmvvm.data.cloud
 
 import retrofit2.Call
 import retrofit2.http.GET

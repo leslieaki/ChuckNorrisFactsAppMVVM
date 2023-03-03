@@ -6,4 +6,6 @@
     <dimen name="medium_size">22sp</dimen>
     <dimen name="pre_medium_size">18sp</dimen>
     <dimen name="image_size">70dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_medium_negative">-16dp</dimen>
 </resources>
