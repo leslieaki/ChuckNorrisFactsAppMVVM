@@ -1,6 +1,7 @@
 package com.example.chucknorrisfactsappmvvm.data.cloud
 
 import com.example.chucknorrisfactsappmvvm.data.cache.CacheDataSource
+import com.example.chucknorrisfactsappmvvm.data.cache.FactCache
 import com.example.chucknorrisfactsappmvvm.presentation.FactUi
 import com.google.gson.annotations.SerializedName
 
@@ -26,4 +27,12 @@ data class FactCloud(
     fun toFavoriteUi(): FactUi = FactUi.Favorite(value)
 
     fun change(cacheDataSource: CacheDataSource): FactUi = cacheDataSource.addOrRemove(id, this)
+
+    fun toCache(): FactCache {
+        val factCache = FactCache()
+        factCache.id = this.id
+        factCache.value = value
+        factCache.url = url
+        return factCache
+    }
 }

@@ -6,6 +6,7 @@ import com.example.chucknorrisfactsappmvvm.data.cloud.CloudDataSource
 import com.example.chucknorrisfactsappmvvm.data.cloud.FactService
 import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
+import io.realm.Realm
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -15,6 +16,7 @@ class FactApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Realm.init(this)
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.chucknorris.io/jokes/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -26,7 +28,7 @@ class FactApp : Application() {
                     retrofit.create(FactService::class.java),
                     manageResources
                 ),
-                CacheDataSource.Fake(manageResources)
+                CacheDataSource.Base(Realm.getDefaultInstance(), manageResources)
             )
         )
     }
