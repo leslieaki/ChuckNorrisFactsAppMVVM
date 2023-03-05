@@ -9,12 +9,8 @@ import io.realm.annotations.PrimaryKey
 
 open class FactCache : RealmObject() {
     @PrimaryKey
-    var categories: List<Any> = emptyList()
-    var createdAt: String = ""
-    var iconUrl: String = ""
-    var id: String = ""
-    val updatedAt: String = ""
-    var url: String = ""
-    var value: String = ""
-
+    var type: String = ""
+    var setup: String = ""
+    var punchline: String = ""
+    var id: Int = -1
 }

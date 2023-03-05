@@ -8,12 +8,12 @@ import io.realm.Realm
 
 interface CacheDataSource {
 
-    fun addOrRemove(id: String, fact: FactCloud): FactUi
+    fun addOrRemove(id: Int, fact: FactCloud): FactUi
 
     fun fetch(factCacheCallback: FactCacheCallback)
 
     class Base(
-        private val realm: Realm,
+        private val realm: ProvideRealm,
         private val manageResources: ManageResources
     ) :
         CacheDataSource {
@@ -22,17 +22,17 @@ interface CacheDataSource {
             Error.NoFavoriteFact(manageResources)
         }
 
-        override fun addOrRemove(id: String, fact: FactCloud): FactUi {
-            realm.use {
+        override fun addOrRemove(id: Int, fact: FactCloud): FactUi {
+            realm.provideRealm().let {
                 val factCached = it.where(FactCache::class.java).equalTo("id", id).findFirst()
                 if (factCached == null) {
-                    it.executeTransactionAsync { realm ->
+                    it.executeTransaction { realm ->
                         val factCache = fact.toCache()
                         realm.insert(factCache)
                     }
                     return fact.toFavoriteUi()
                 } else {
-                    it.executeTransactionAsync { realm ->
+                    it.executeTransaction {
                         factCached.deleteFromRealm()
                     }
                     return fact.toUi()
@@ -41,7 +41,7 @@ interface CacheDataSource {
         }
 
         override fun fetch(factCacheCallback: FactCacheCallback) {
-            realm.use {
+            realm.provideRealm().let {
                 val facts = it.where(FactCache::class.java).findAll()
                 if (facts.isEmpty()) {
                     factCacheCallback.provideError(error)
@@ -49,13 +49,10 @@ interface CacheDataSource {
                     val factCached = facts.random()
                     factCacheCallback.provideFact(
                         FactCloud(
-                            factCached.categories,
-                            factCached.createdAt,
-                            factCached.iconUrl,
-                            factCached.id,
-                            factCached.updatedAt,
-                            factCached.url,
-                            factCached.value
+                            factCached.type,
+                            factCached.setup,
+                            factCached.punchline,
+                            factCached.id
                         )
                     )
                 }
@@ -70,10 +67,10 @@ interface CacheDataSource {
             Error.NoFavoriteFact(manageResources)
         }
 
-        private val map = mutableMapOf<String, FactCloud>()
+        private val map = mutableMapOf<Int, FactCloud>()
 
 
-        override fun addOrRemove(id: String, fact: FactCloud): FactUi {
+        override fun addOrRemove(id: Int, fact: FactCloud): FactUi {
             return if (map.containsKey(id)) {
                 map.remove(id)
                 fact.toUi()
@@ -106,4 +103,8 @@ interface FactCacheCallback : ProvideError {
 
 interface ProvideError {
     fun provideError(error: Error)
+}
+
+interface ProvideRealm {
+    fun provideRealm(): Realm
 }

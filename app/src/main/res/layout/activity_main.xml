@@ -56,16 +56,26 @@
         android:paddingHorizontal="@dimen/margin_horizontal_large_size">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textViewSetup"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="7"
+            android:layout_weight="10"
             android:fontFamily="@font/sans_pro_bold"
             android:gravity="center|bottom"
             android:textColor="@color/dark_cream"
             android:textSize="@dimen/medium_size"
             tools:text="Fact here" />
 
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/textViewPunchline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sans_pro_bold"
+            android:gravity="center|bottom"
+            android:textColor="@color/dark_cream"
+            android:textSize="@dimen/medium_size"
+            tools:text="Fact here" />
 
         <ProgressBar
             android:id="@+id/progressBar"

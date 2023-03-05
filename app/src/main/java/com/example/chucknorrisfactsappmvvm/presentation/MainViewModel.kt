@@ -13,7 +13,8 @@ class MainViewModel(private val repository: Repository<FactUi, Error>) {
 
         override fun provideSuccess(data: FactUi) = data.show(factUiCallback)
 
-        override fun provideError(error: Error) = FactUi.Failed(error.message()).show(factUiCallback)
+        override fun provideError(error: Error) =
+            FactUi.Failed(error.message()).show(factUiCallback)
     }
 
     fun init(factUiCallback: FactUiCallback) {
@@ -35,19 +36,21 @@ class MainViewModel(private val repository: Repository<FactUi, Error>) {
     }
 
     fun changeFactStatus() {
-        repository.changeFactStatus(resultCallBack)
+        Thread {
+            repository.changeFactStatus(resultCallBack)
+        }.start()
     }
 }
 
 interface FactUiCallback {
 
-    fun provideText(text: String)
+    fun provideText(setup: String, punchline: String)
 
     fun provideIconResId(@DrawableRes iconResId: Int)
 
     class Empty : FactUiCallback {
 
-        override fun provideText(text: String) = Unit
+        override fun provideText(setup: String, punchline: String) = Unit
 
         override fun provideIconResId(iconResId: Int) = Unit
     }

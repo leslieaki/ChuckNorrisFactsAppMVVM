@@ -6,33 +6,29 @@ import com.example.chucknorrisfactsappmvvm.presentation.FactUi
 import com.google.gson.annotations.SerializedName
 
 
-data class FactCloud(
-    @SerializedName("categories")
-    private val categories: List<Any>,
-    @SerializedName("created_at")
-    private val created_at: String,
-    @SerializedName("icon_url")
-    private val icon_url: String,
+class FactCloud(
+    @SerializedName("type")
+    private val type: String,
+    @SerializedName("setup")
+    private val setup: String,
+    @SerializedName("punchline")
+    private val punchline: String,
     @SerializedName("id")
-    private val id: String,
-    @SerializedName("updated_at")
-    private val updated_at: String,
-    @SerializedName("url")
-    private val url: String,
-    @SerializedName("value")
-    private val value: String
+    private val id: Int
 ) {
-    fun toUi(): FactUi = FactUi.Base(value)
+    fun toUi(): FactUi = FactUi.Base(setup, punchline)
 
-    fun toFavoriteUi(): FactUi = FactUi.Favorite(value)
+    fun toFavoriteUi(): FactUi = FactUi.Favorite(setup, punchline)
 
     fun change(cacheDataSource: CacheDataSource): FactUi = cacheDataSource.addOrRemove(id, this)
 
     fun toCache(): FactCache {
         val factCache = FactCache()
+        factCache.type = this.type
+        factCache.setup = this.setup
+        factCache.punchline = this.punchline
         factCache.id = this.id
-        factCache.value = value
-        factCache.url = url
         return factCache
     }
 }
+

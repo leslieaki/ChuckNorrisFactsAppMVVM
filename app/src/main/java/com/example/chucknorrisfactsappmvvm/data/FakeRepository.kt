@@ -15,8 +15,8 @@ class FakeRepository(
 
     override fun fetch() {
         when (++count % 3) {
-            0 -> callback?.provideSuccess(FactUi.Base(""))
-            1 -> callback?.provideSuccess(FactUi.Favorite(""))
+            0 -> callback?.provideSuccess(FactUi.Base("", ""))
+            1 -> callback?.provideSuccess(FactUi.Favorite("", ""))
             2 -> callback?.provideError(serviceError)
         }
     }

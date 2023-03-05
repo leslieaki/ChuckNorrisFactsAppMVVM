@@ -2,6 +2,7 @@ package com.example.chucknorrisfactsappmvvm.data
 
 import android.app.Application
 import com.example.chucknorrisfactsappmvvm.data.cache.CacheDataSource
+import com.example.chucknorrisfactsappmvvm.data.cache.ProvideRealm
 import com.example.chucknorrisfactsappmvvm.data.cloud.CloudDataSource
 import com.example.chucknorrisfactsappmvvm.data.cloud.FactService
 import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel
@@ -18,7 +19,7 @@ class FactApp : Application() {
         super.onCreate()
         Realm.init(this)
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.chucknorris.io/jokes/")
+            .baseUrl("https://official-joke-api.appspot.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val manageResources = ManageResources.Base(this)
@@ -28,7 +29,9 @@ class FactApp : Application() {
                     retrofit.create(FactService::class.java),
                     manageResources
                 ),
-                CacheDataSource.Base(Realm.getDefaultInstance(), manageResources)
+                CacheDataSource.Base(object : ProvideRealm {
+                    override fun provideRealm(): Realm = Realm.getDefaultInstance()
+                }, manageResources)
             )
         )
     }

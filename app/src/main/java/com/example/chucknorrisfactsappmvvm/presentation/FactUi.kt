@@ -4,19 +4,22 @@ import androidx.annotation.DrawableRes
 import com.example.chucknorrisfactsappmvvm.R
 
 abstract class FactUi(
-    private val fact: String,
+    private val setup: String,
+    private val punchline: String,
     @DrawableRes private val iconResId: Int
 ) {
 
     fun show(factUiCallback: FactUiCallback) = with(factUiCallback) {
-        provideText(fact)
+        provideText(setup, punchline)
         provideIconResId(iconResId)
     }
 
 
-    class Base(fact: String) : FactUi(fact, R.drawable.ic_favorite_unselected_24)
+    class Base(text: String, punchline: String) :
+        FactUi(text, punchline, R.drawable.ic_favorite_unselected_24)
 
-    class Favorite(fact: String) : FactUi(fact, R.drawable.ic_favorite_selected_24)
+    class Favorite(setup: String, punchline: String) :
+        FactUi(setup, punchline, R.drawable.ic_favorite_selected_24)
 
-    class Failed(fact: String) : FactUi(fact, 0)
+    class Failed(text: String) : FactUi(text, "", 0)
 }
