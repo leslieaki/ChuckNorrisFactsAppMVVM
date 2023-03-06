@@ -1,5 +1,6 @@
 package com.example.chucknorrisfactsappmvvm.data.cloud
 
+import com.example.chucknorrisfactsappmvvm.data.FactDomain
 import com.example.chucknorrisfactsappmvvm.data.cache.ProvideError
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 import retrofit2.Call
@@ -32,7 +33,7 @@ interface CloudDataSource {
                         if (body == null)
                             cloudCallback.provideError(serviceError)
                         else
-                            cloudCallback.provideFactCloud(body)
+                            cloudCallback.provideFact(body.toFact())
                     } else
                         cloudCallback.provideError(serviceError)
                 }
@@ -52,6 +53,6 @@ interface CloudDataSource {
 
 interface FactCloudCallback : ProvideError {
 
-    fun provideFactCloud(factCloud: FactCloud)
+    fun provideFact(fact: FactDomain)
 }
 

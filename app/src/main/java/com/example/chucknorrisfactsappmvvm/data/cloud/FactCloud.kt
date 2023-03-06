@@ -1,8 +1,7 @@
 package com.example.chucknorrisfactsappmvvm.data.cloud
 
-import com.example.chucknorrisfactsappmvvm.data.cache.CacheDataSource
-import com.example.chucknorrisfactsappmvvm.data.cache.FactCache
-import com.example.chucknorrisfactsappmvvm.presentation.FactUi
+import com.example.chucknorrisfactsappmvvm.data.Fact
+import com.example.chucknorrisfactsappmvvm.data.FactDomain
 import com.google.gson.annotations.SerializedName
 
 
@@ -15,20 +14,10 @@ class FactCloud(
     private val punchline: String,
     @SerializedName("id")
     private val id: Int,
-) {
-    fun toUi(): FactUi = FactUi.Base(setup, punchline)
+) : Fact {
 
-    fun toFavoriteUi(): FactUi = FactUi.Favorite(setup, punchline)
+    override fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, setup, punchline, id)
 
-    fun change(cacheDataSource: CacheDataSource): FactUi = cacheDataSource.addOrRemove(id, this)
-
-    fun toCache(): FactCache {
-        val factCache = FactCache()
-        factCache.id = this.id
-        factCache.text = this.setup
-        factCache.punchline = this.punchline
-        factCache.type = this.type
-        return factCache
-    }
+    fun toFact() = FactDomain(type, setup, punchline, id)
 }
 
