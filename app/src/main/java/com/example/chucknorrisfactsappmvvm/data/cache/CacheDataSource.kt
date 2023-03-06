@@ -5,11 +5,9 @@ import com.example.chucknorrisfactsappmvvm.presentation.FactUi
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 import io.realm.Realm
 
-interface CacheDataSource {
+interface CacheDataSource : DataSource {
 
     fun addOrRemove(id: Int, fact: Fact): FactUi
-
-    fun fetch(factCacheCallback: FactCallback)
 
     class Base(
         private val realm: ProvideRealm,
@@ -86,11 +84,13 @@ interface CacheDataSource {
     }
 }
 
+interface DataSource {
+    fun fetch(factCallback: FactCallback)
+}
 
 interface FactCallback : ProvideError {
     fun provideFact(fact: Fact)
 }
-
 
 interface ProvideError {
     fun provideError(error: Error)

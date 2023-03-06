@@ -9,38 +9,32 @@ class BaseRepository(
     private val cloudDataSource: CloudDataSource,
     private val cacheDataSource: CacheDataSource,
     private val change: Fact.Mapper<FactUi> = Change(cacheDataSource),
-    private val toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
-    private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
+    toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
+    toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
 ) : Repository<FactUi, Error> {
 
     private var callback: ResultCallBack<FactUi, Error>? = null
     private var factTemporary: Fact? = null
+    private val factCacheCallback = BaseFactCallback(toFavorite)
+    private val cloudCallback = BaseFactCallback(toBaseUi)
 
-    override fun fetch() {
-        if (getFactFromCache) {
-            cacheDataSource.fetch(object : FactCallback {
-                override fun provideFact(fact: Fact) {
-                    factTemporary = fact
-                    callback?.provideSuccess(fact.map(toFavorite))
-                }
+    override fun fetch() = if (getFactFromCache)
+        cacheDataSource.fetch(factCacheCallback)
+    else
+        cloudDataSource.fetch(cloudCallback)
 
-                override fun provideError(error: Error) {
-                    callback?.provideError(error)
-                }
 
-            })
-        } else {
-            cloudDataSource.fetch(object : FactCallback {
-                override fun provideFact(fact: Fact) {
-                    factTemporary = fact
-                    callback?.provideSuccess(fact.map(toBaseUi))
-                }
+    private inner class BaseFactCallback(
+        private val mapper: Fact.Mapper<FactUi>
+    ) : FactCallback {
+        override fun provideFact(fact: Fact) {
+            factTemporary = fact
+            callback?.provideSuccess(fact.map(mapper))
+        }
 
-                override fun provideError(error: Error) {
-                    factTemporary = null
-                    callback?.provideError(error)
-                }
-            })
+        override fun provideError(error: Error) {
+            factTemporary = null
+            callback?.provideError(error)
         }
     }
 

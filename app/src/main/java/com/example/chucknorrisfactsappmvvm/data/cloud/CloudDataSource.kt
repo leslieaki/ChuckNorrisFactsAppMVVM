@@ -1,5 +1,6 @@
 package com.example.chucknorrisfactsappmvvm.data.cloud
 
+import com.example.chucknorrisfactsappmvvm.data.cache.DataSource
 import com.example.chucknorrisfactsappmvvm.data.cache.FactCallback
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 import retrofit2.Call
@@ -7,9 +8,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.UnknownHostException
 
-interface CloudDataSource {
-
-    fun fetch(cloudCallback: FactCallback)
+interface CloudDataSource : DataSource {
 
     class Base(
         private val factService: FactService,
