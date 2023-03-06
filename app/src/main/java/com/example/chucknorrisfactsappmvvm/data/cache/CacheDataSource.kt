@@ -46,7 +46,7 @@ interface CacheDataSource {
                     factCacheCallback.provideError(error)
                 } else {
                     val factCached = facts.random()
-                    factCacheCallback.provideFact(factCached)
+                    factCacheCallback.provideFact(it.copyFromRealm(factCached))
                 }
             }
         }
