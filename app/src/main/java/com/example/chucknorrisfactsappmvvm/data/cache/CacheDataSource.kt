@@ -11,40 +11,39 @@ interface CacheDataSource : DataSource {
 
     class Base(
         private val realm: ProvideRealm,
-        private val manageResources: ManageResources
-    ) :
-        CacheDataSource {
-
-        private val error: Error by lazy {
-            Error.NoFavoriteFact(manageResources)
-        }
+        manageResources: ManageResources,
+        private val error: Error = Error.NoFavoriteFact(manageResources),
+        private val mapper: Fact.Mapper<FactCache> = ToCache(),
+        private val toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
+        private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
+    ) : CacheDataSource {
 
         override fun addOrRemove(id: Int, fact: Fact): FactUi {
             realm.provideRealm().let {
                 val factCached = it.where(FactCache::class.java).equalTo("id", id).findFirst()
                 if (factCached == null) {
                     it.executeTransaction { realm ->
-                        val factCache = fact.map(ToCache())
+                        val factCache = fact.map(mapper)
                         realm.insert(factCache)
                     }
-                    return fact.map(ToFavoriteUi())
+                    return fact.map(toFavorite)
                 } else {
                     it.executeTransaction {
                         factCached.deleteFromRealm()
                     }
-                    return fact.map(ToBaseUi())
+                    return fact.map(toBaseUi)
                 }
             }
         }
 
-        override fun fetch(factCacheCallback: FactCallback) {
+        override fun fetch(factCallback: FactCallback) {
             realm.provideRealm().let {
                 val facts = it.where(FactCache::class.java).findAll()
                 if (facts.isEmpty()) {
-                    factCacheCallback.provideError(error)
+                    factCallback.provideError(error)
                 } else {
                     val factCached = facts.random()
-                    factCacheCallback.provideFact(it.copyFromRealm(factCached))
+                    factCallback.provideFact(it.copyFromRealm(factCached))
                 }
             }
         }
@@ -71,12 +70,12 @@ interface CacheDataSource : DataSource {
 
         private var count = 0
 
-        override fun fetch(factCacheCallback: FactCallback) {
+        override fun fetch(factCallback: FactCallback) {
             if (map.isEmpty())
-                factCacheCallback.provideError(error)
+                factCallback.provideError(error)
             else {
                 if (++count == map.size) count = 0
-                factCacheCallback.provideFact(
+                factCallback.provideFact(
                     map.toList()[count].second
                 )
             }
