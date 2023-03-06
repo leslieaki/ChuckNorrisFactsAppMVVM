@@ -55,8 +55,18 @@ class ToFavoriteUi : Fact.Mapper<FactUi> {
     }
 }
 
-class Change(private val cacheDataSource: CacheDataSource) : Fact.Mapper<FactUi> {
+class Change(
+    private val cacheDataSource: CacheDataSource,
+    private val toDomain: Fact.Mapper<FactDomain> = ToDomain()
+) : Fact.Mapper<FactUi> {
     override fun map(type: String, setup: String, punchline: String, id: Int): FactUi {
-        return cacheDataSource.addOrRemove(id, FactDomain(type, setup, punchline, id))
+        return cacheDataSource.addOrRemove(id, toDomain.map(type, setup, punchline, id))
     }
+}
+
+class ToDomain : Fact.Mapper<FactDomain> {
+    override fun map(type: String, setup: String, punchline: String, id: Int): FactDomain {
+        return FactDomain(type, setup, punchline, id)
+    }
+
 }
