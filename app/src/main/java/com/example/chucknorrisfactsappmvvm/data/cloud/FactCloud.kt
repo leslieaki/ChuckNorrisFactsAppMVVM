@@ -14,7 +14,7 @@ class FactCloud(
     @SerializedName("punchline")
     private val punchline: String,
     @SerializedName("id")
-    private val id: Int
+    private val id: Int,
 ) {
     fun toUi(): FactUi = FactUi.Base(setup, punchline)
 
@@ -24,10 +24,10 @@ class FactCloud(
 
     fun toCache(): FactCache {
         val factCache = FactCache()
-        factCache.type = this.type
-        factCache.setup = this.setup
-        factCache.punchline = this.punchline
         factCache.id = this.id
+        factCache.text = this.setup
+        factCache.punchline = this.punchline
+        factCache.type = this.type
         return factCache
     }
 }

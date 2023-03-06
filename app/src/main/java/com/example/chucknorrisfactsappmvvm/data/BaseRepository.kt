@@ -59,6 +59,7 @@ class BaseRepository(
     }
 
     private var getFactFromCache = false
+
     override fun chooseFavorites(favorites: Boolean) {
         getFactFromCache = favorites
     }

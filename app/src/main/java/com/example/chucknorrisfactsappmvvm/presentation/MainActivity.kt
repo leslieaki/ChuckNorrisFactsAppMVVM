@@ -13,8 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
-        val textViewSetup = binding.textViewSetup
-        val textViewPunchline = binding.textViewPunchline
+        val textView = binding.textView
         val button = binding.actionButton
         val progressBar = binding.progressBar
         setContentView(binding.root)
@@ -36,11 +35,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.init(object : FactUiCallback {
-            override fun provideText(setup: String, punchline: String) = runOnUiThread {
+            override fun provideText(text: String) = runOnUiThread {
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
-                textViewSetup.text = setup
-                textViewPunchline.text = punchline
+                textView.text = text
             }
 
             override fun provideIconResId(iconResId: Int) = runOnUiThread {

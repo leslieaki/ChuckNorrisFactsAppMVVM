@@ -50,7 +50,7 @@ interface CacheDataSource {
                     factCacheCallback.provideFact(
                         FactCloud(
                             factCached.type,
-                            factCached.setup,
+                            factCached.text,
                             factCached.punchline,
                             factCached.id
                         )
@@ -58,7 +58,6 @@ interface CacheDataSource {
                 }
             }
         }
-
     }
 
     class Fake(manageResources: ManageResources) : CacheDataSource {

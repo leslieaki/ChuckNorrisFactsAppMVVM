@@ -10,7 +10,6 @@ class MainViewModel(private val repository: Repository<FactUi, Error>) {
     private var factUiCallback: FactUiCallback = FactUiCallback.Empty()
 
     private val resultCallBack = object : ResultCallBack<FactUi, Error> {
-
         override fun provideSuccess(data: FactUi) = data.show(factUiCallback)
 
         override fun provideError(error: Error) =
@@ -44,13 +43,13 @@ class MainViewModel(private val repository: Repository<FactUi, Error>) {
 
 interface FactUiCallback {
 
-    fun provideText(setup: String, punchline: String)
+    fun provideText(text: String)
 
     fun provideIconResId(@DrawableRes iconResId: Int)
 
     class Empty : FactUiCallback {
 
-        override fun provideText(setup: String, punchline: String) = Unit
+        override fun provideText(text: String) = Unit
 
         override fun provideIconResId(iconResId: Int) = Unit
     }

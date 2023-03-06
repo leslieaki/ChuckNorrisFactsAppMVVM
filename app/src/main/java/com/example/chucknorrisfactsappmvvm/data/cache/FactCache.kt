@@ -9,8 +9,8 @@ import io.realm.annotations.PrimaryKey
 
 open class FactCache : RealmObject() {
     @PrimaryKey
-    var type: String = ""
-    var setup: String = ""
-    var punchline: String = ""
     var id: Int = -1
+    var text: String = ""
+    var punchline: String = ""
+    var type: String = ""
 }
