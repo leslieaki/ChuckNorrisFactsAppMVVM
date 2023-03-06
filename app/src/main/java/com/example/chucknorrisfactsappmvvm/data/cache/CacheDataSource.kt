@@ -7,9 +7,9 @@ import io.realm.Realm
 
 interface CacheDataSource {
 
-    fun addOrRemove(id: Int, fact: FactDomain): FactUi
+    fun addOrRemove(id: Int, fact: Fact): FactUi
 
-    fun fetch(factCacheCallback: FactCacheCallback)
+    fun fetch(factCacheCallback: FactCallback)
 
     class Base(
         private val realm: ProvideRealm,
@@ -21,7 +21,7 @@ interface CacheDataSource {
             Error.NoFavoriteFact(manageResources)
         }
 
-        override fun addOrRemove(id: Int, fact: FactDomain): FactUi {
+        override fun addOrRemove(id: Int, fact: Fact): FactUi {
             realm.provideRealm().let {
                 val factCached = it.where(FactCache::class.java).equalTo("id", id).findFirst()
                 if (factCached == null) {
@@ -39,14 +39,14 @@ interface CacheDataSource {
             }
         }
 
-        override fun fetch(factCacheCallback: FactCacheCallback) {
+        override fun fetch(factCacheCallback: FactCallback) {
             realm.provideRealm().let {
                 val facts = it.where(FactCache::class.java).findAll()
                 if (facts.isEmpty()) {
                     factCacheCallback.provideError(error)
                 } else {
                     val factCached = facts.random()
-                    factCacheCallback.provideFact(factCached.toFact())
+                    factCacheCallback.provideFact(factCached)
                 }
             }
         }
@@ -58,10 +58,10 @@ interface CacheDataSource {
             Error.NoFavoriteFact(manageResources)
         }
 
-        private val map = mutableMapOf<Int, FactDomain>()
+        private val map = mutableMapOf<Int, Fact>()
 
 
-        override fun addOrRemove(id: Int, fact: FactDomain): FactUi {
+        override fun addOrRemove(id: Int, fact: Fact): FactUi {
             return if (map.containsKey(id)) {
                 map.remove(id)
                 fact.map(ToBaseUi())
@@ -73,7 +73,7 @@ interface CacheDataSource {
 
         private var count = 0
 
-        override fun fetch(factCacheCallback: FactCacheCallback) {
+        override fun fetch(factCacheCallback: FactCallback) {
             if (map.isEmpty())
                 factCacheCallback.provideError(error)
             else {
@@ -87,8 +87,8 @@ interface CacheDataSource {
 }
 
 
-interface FactCacheCallback : ProvideError {
-    fun provideFact(fact: FactDomain)
+interface FactCallback : ProvideError {
+    fun provideFact(fact: Fact)
 }
 
 

@@ -60,9 +60,3 @@ class Change(private val cacheDataSource: CacheDataSource) : Fact.Mapper<FactUi>
         return cacheDataSource.addOrRemove(id, FactDomain(type, setup, punchline, id))
     }
 }
-
-class ToDomain : Fact.Mapper<FactDomain> {
-    override fun map(type: String, setup: String, punchline: String, id: Int): FactDomain {
-        return FactDomain(type, setup, punchline, id)
-    }
-}

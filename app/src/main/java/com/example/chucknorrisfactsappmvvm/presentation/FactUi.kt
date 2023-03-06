@@ -6,7 +6,8 @@ import com.example.chucknorrisfactsappmvvm.R
 abstract class FactUi(
     private val text: String,
     private val punchline: String,
-    @DrawableRes private val iconResId: Int
+    @DrawableRes
+    private val iconResId: Int
 ) {
 
     fun show(factUiCallback: FactUiCallback) = with(factUiCallback) {

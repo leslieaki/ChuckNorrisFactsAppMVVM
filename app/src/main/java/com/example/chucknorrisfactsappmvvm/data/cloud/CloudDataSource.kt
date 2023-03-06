@@ -1,7 +1,6 @@
 package com.example.chucknorrisfactsappmvvm.data.cloud
 
-import com.example.chucknorrisfactsappmvvm.data.FactDomain
-import com.example.chucknorrisfactsappmvvm.data.cache.ProvideError
+import com.example.chucknorrisfactsappmvvm.data.cache.FactCallback
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 import retrofit2.Call
 import retrofit2.Callback
@@ -10,7 +9,7 @@ import java.net.UnknownHostException
 
 interface CloudDataSource {
 
-    fun fetch(cloudCallback: FactCloudCallback)
+    fun fetch(cloudCallback: FactCallback)
 
     class Base(
         private val factService: FactService,
@@ -24,7 +23,7 @@ interface CloudDataSource {
             com.example.chucknorrisfactsappmvvm.data.Error.ServiceUnavailable(manageResources)
         }
 
-        override fun fetch(cloudCallback: FactCloudCallback) {
+        override fun fetch(cloudCallback: FactCallback) {
             factService.fact().enqueue(object : Callback<FactCloud> {
 
                 override fun onResponse(call: Call<FactCloud>, response: Response<FactCloud>) {
@@ -33,7 +32,7 @@ interface CloudDataSource {
                         if (body == null)
                             cloudCallback.provideError(serviceError)
                         else
-                            cloudCallback.provideFact(body.toFact())
+                            cloudCallback.provideFact(body)
                     } else
                         cloudCallback.provideError(serviceError)
                 }
@@ -50,9 +49,3 @@ interface CloudDataSource {
         }
     }
 }
-
-interface FactCloudCallback : ProvideError {
-
-    fun provideFact(fact: FactDomain)
-}
-

@@ -1,7 +1,6 @@
 package com.example.chucknorrisfactsappmvvm.data.cloud
 
 import com.example.chucknorrisfactsappmvvm.data.Fact
-import com.example.chucknorrisfactsappmvvm.data.FactDomain
 import com.google.gson.annotations.SerializedName
 
 
@@ -17,7 +16,5 @@ class FactCloud(
 ) : Fact {
 
     override fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, setup, punchline, id)
-
-    fun toFact() = FactDomain(type, setup, punchline, id)
 }
 

@@ -1,26 +1,27 @@
 package com.example.chucknorrisfactsappmvvm.data
 
 import com.example.chucknorrisfactsappmvvm.data.cache.CacheDataSource
-import com.example.chucknorrisfactsappmvvm.data.cache.FactCacheCallback
+import com.example.chucknorrisfactsappmvvm.data.cache.FactCallback
 import com.example.chucknorrisfactsappmvvm.data.cloud.CloudDataSource
-import com.example.chucknorrisfactsappmvvm.data.cloud.FactCloudCallback
 import com.example.chucknorrisfactsappmvvm.presentation.FactUi
 
 class BaseRepository(
     private val cloudDataSource: CloudDataSource,
-    private val cacheDataSource: CacheDataSource
+    private val cacheDataSource: CacheDataSource,
+    private val change: Fact.Mapper<FactUi> = Change(cacheDataSource),
+    private val toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
+    private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
 ) : Repository<FactUi, Error> {
 
     private var callback: ResultCallBack<FactUi, Error>? = null
-
-    private var factTemporary: FactDomain? = null
+    private var factTemporary: Fact? = null
 
     override fun fetch() {
         if (getFactFromCache) {
-            cacheDataSource.fetch(object : FactCacheCallback {
-                override fun provideFact(fact: FactDomain) {
+            cacheDataSource.fetch(object : FactCallback {
+                override fun provideFact(fact: Fact) {
                     factTemporary = fact
-                    callback?.provideSuccess(fact.map(ToFavoriteUi()))
+                    callback?.provideSuccess(fact.map(toFavorite))
                 }
 
                 override fun provideError(error: Error) {
@@ -29,10 +30,10 @@ class BaseRepository(
 
             })
         } else {
-            cloudDataSource.fetch(object : FactCloudCallback {
-                override fun provideFact(fact: FactDomain) {
+            cloudDataSource.fetch(object : FactCallback {
+                override fun provideFact(fact: Fact) {
                     factTemporary = fact
-                    callback?.provideSuccess(fact.map(ToBaseUi()))
+                    callback?.provideSuccess(fact.map(toBaseUi))
                 }
 
                 override fun provideError(error: Error) {
@@ -53,7 +54,7 @@ class BaseRepository(
 
     override fun changeFactStatus(resultCallBack: ResultCallBack<FactUi, Error>) {
         factTemporary?.let {
-            resultCallBack.provideSuccess(it.map(Change(cacheDataSource)))
+            resultCallBack.provideSuccess(it.map(change))
         }
     }
 
