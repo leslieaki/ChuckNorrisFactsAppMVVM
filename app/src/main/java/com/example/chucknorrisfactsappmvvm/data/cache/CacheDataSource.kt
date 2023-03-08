@@ -113,14 +113,6 @@ interface FactResult : Fact {
     }
 }
 
-//interface FactCallback : ProvideError {
-//    fun provideFact(fact: Fact)
-//}
-//
-//interface ProvideError {
-//    fun provideError(error: Error)
-//}
-
 interface ProvideRealm {
     fun provideRealm(): Realm
 }
