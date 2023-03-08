@@ -1,44 +1,39 @@
 package com.example.chucknorrisfactsappmvvm.presentation
 
 import androidx.annotation.DrawableRes
-import com.example.chucknorrisfactsappmvvm.data.Error
-import com.example.chucknorrisfactsappmvvm.data.Repository
-import com.example.chucknorrisfactsappmvvm.data.ResultCallBack
+import com.example.chucknorrisfactsappmvvm.data.*
 
-class MainViewModel(private val repository: Repository<FactUi, Error>) {
-
+class MainViewModel(
+    private val repository: Repository<FactUi, Error>,
+    private val toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
+    private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
+) {
     private var factUiCallback: FactUiCallback = FactUiCallback.Empty()
-
-    private val resultCallBack = object : ResultCallBack<FactUi, Error> {
-        override fun provideSuccess(data: FactUi) = data.show(factUiCallback)
-
-        override fun provideError(error: Error) =
-            FactUi.Failed(error.message()).show(factUiCallback)
-    }
 
     fun init(factUiCallback: FactUiCallback) {
         this.factUiCallback = factUiCallback
-        repository.init(resultCallBack)
     }
 
-    fun getFact() {
-        repository.fetch()
-    }
+    fun getFact() = Thread {
+        val result = repository.fetch()
+        if (result.isSuccessful())
+            result.map(if (result.toFavorite()) toFavorite else toBaseUi).show(factUiCallback)
+        else
+            FactUi.Failed(result.errorMessage()).show(factUiCallback)
+    }.start()
 
     fun clear() {
         factUiCallback = FactUiCallback.Empty()
-        repository.clear()
     }
 
     fun chooseFavorite(favorites: Boolean) {
         repository.chooseFavorites(favorites)
     }
 
-    fun changeFactStatus() {
-        Thread {
-            repository.changeFactStatus(resultCallBack)
-        }.start()
-    }
+    fun changeFactStatus() = Thread {
+        val factUi = repository.changeFactStatus()
+        factUi.show(factUiCallback)
+    }.start()
 }
 
 interface FactUiCallback {

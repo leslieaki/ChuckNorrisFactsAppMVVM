@@ -19,81 +19,107 @@ interface CacheDataSource : DataSource {
     ) : CacheDataSource {
 
         override fun addOrRemove(id: Int, fact: Fact): FactUi {
-            realm.provideRealm().let {
-                val factCached = it.where(FactCache::class.java).equalTo("id", id).findFirst()
-                if (factCached == null) {
-                    it.executeTransaction { realm ->
-                        val factCache = fact.map(mapper)
-                        realm.insert(factCache)
-                    }
-                    return fact.map(toFavorite)
-                } else {
-                    it.executeTransaction {
-                        factCached.deleteFromRealm()
-                    }
-                    return fact.map(toBaseUi)
+            val realm = realm.provideRealm()
+            val factCached = realm.where(FactCache::class.java).equalTo("id", id).findFirst()
+            return if (factCached == null) {
+                realm.executeTransaction {
+                    val factCache = fact.map(mapper)
+                    it.insert(factCache)
                 }
+                fact.map(toFavorite)
+            } else {
+                realm.executeTransaction {
+                    factCached.deleteFromRealm()
+                }
+                fact.map(toBaseUi)
             }
         }
 
-        override fun fetch(factCallback: FactCallback) {
-            realm.provideRealm().let {
-                val facts = it.where(FactCache::class.java).findAll()
-                if (facts.isEmpty()) {
-                    factCallback.provideError(error)
-                } else {
-                    val factCached = facts.random()
-                    factCallback.provideFact(it.copyFromRealm(factCached))
-                }
-            }
+        override fun fetch(): FactResult {
+            val realm = realm.provideRealm()
+            val facts = realm.where(FactCache::class.java).findAll()
+            return if (facts.isEmpty())
+                FactResult.Failure(error)
+            else FactResult.Success(realm.copyFromRealm(facts.random()), true)
+        }
+    }
+}
+
+class Fake(manageResources: ManageResources) : CacheDataSource {
+
+    private val error: Error by lazy {
+        Error.NoFavoriteFact(manageResources)
+    }
+
+    private val map = mutableMapOf<Int, Fact>()
+
+
+    override fun addOrRemove(id: Int, fact: Fact): FactUi {
+        return if (map.containsKey(id)) {
+            map.remove(id)
+            fact.map(ToBaseUi())
+        } else {
+            map[id] = fact
+            fact.map(ToFavoriteUi())
         }
     }
 
-    class Fake(manageResources: ManageResources) : CacheDataSource {
+    private var count = 0
 
-        private val error: Error by lazy {
-            Error.NoFavoriteFact(manageResources)
-        }
-
-        private val map = mutableMapOf<Int, Fact>()
-
-
-        override fun addOrRemove(id: Int, fact: Fact): FactUi {
-            return if (map.containsKey(id)) {
-                map.remove(id)
-                fact.map(ToBaseUi())
-            } else {
-                map[id] = fact
-                fact.map(ToFavoriteUi())
-            }
-        }
-
-        private var count = 0
-
-        override fun fetch(factCallback: FactCallback) {
-            if (map.isEmpty())
-                factCallback.provideError(error)
-            else {
-                if (++count == map.size) count = 0
-                factCallback.provideFact(
-                    map.toList()[count].second
-                )
-            }
+    override fun fetch(): FactResult {
+        return if (map.isEmpty())
+            FactResult.Failure(error)
+        else {
+            if (++count == map.size) count = 0
+            FactResult.Success(map.toList()[count].second, true)
         }
     }
 }
 
 interface DataSource {
-    fun fetch(factCallback: FactCallback)
+    fun fetch(): FactResult
 }
 
-interface FactCallback : ProvideError {
-    fun provideFact(fact: Fact)
+interface FactResult : Fact {
+
+    fun toFavorite(): Boolean
+
+    fun isSuccessful(): Boolean
+
+    fun errorMessage(): String
+
+    class Success(private val fact: Fact, private val toFavorite: Boolean) : FactResult {
+
+        override fun toFavorite(): Boolean = toFavorite
+
+        override fun isSuccessful(): Boolean = true
+
+        override fun errorMessage(): String = ""
+
+        override fun <T> map(mapper: Fact.Mapper<T>): T {
+            return fact.map(mapper)
+        }
+    }
+
+    class Failure(private val error: Error) : FactResult {
+
+        override fun toFavorite(): Boolean = false
+
+        override fun isSuccessful(): Boolean = false
+
+        override fun errorMessage(): String = error.message()
+
+        override fun <T> map(mapper: Fact.Mapper<T>): T = throw java.lang.IllegalStateException()
+    }
 }
 
-interface ProvideError {
-    fun provideError(error: Error)
-}
+//interface FactCallback : ProvideError {
+//    fun provideFact(fact: Fact)
+//}
+//
+//interface ProvideError {
+//    fun provideError(error: Error)
+//}
 
 interface ProvideRealm {
     fun provideRealm(): Realm
