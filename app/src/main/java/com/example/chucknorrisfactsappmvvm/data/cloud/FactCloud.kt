@@ -15,6 +15,5 @@ class FactCloud(
     private val id: Int,
 ) : Fact {
 
-    override fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, setup, punchline, id)
+    override suspend fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, setup, punchline, id)
 }
-

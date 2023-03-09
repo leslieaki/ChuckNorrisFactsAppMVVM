@@ -7,7 +7,7 @@ import io.realm.Realm
 
 interface CacheDataSource : DataSource {
 
-    fun addOrRemove(id: Int, fact: Fact): FactUi
+    suspend fun addOrRemove(id: Int, fact: Fact): FactUi
 
     class Base(
         private val realm: ProvideRealm,
@@ -18,29 +18,31 @@ interface CacheDataSource : DataSource {
         private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
     ) : CacheDataSource {
 
-        override fun addOrRemove(id: Int, fact: Fact): FactUi {
-            val realm = realm.provideRealm()
-            val factCached = realm.where(FactCache::class.java).equalTo("id", id).findFirst()
-            return if (factCached == null) {
-                realm.executeTransaction {
+        override suspend fun addOrRemove(id: Int, fact: Fact): FactUi {
+            realm.provideRealm().use { realm ->
+                val factCached = realm.where(FactCache::class.java).equalTo("id", id).findFirst()
+                return if (factCached == null) {
                     val factCache = fact.map(mapper)
-                    it.insert(factCache)
+                    realm.executeTransaction {
+                        it.insert(factCache)
+                    }
+                    fact.map(toFavorite)
+                } else {
+                    realm.executeTransaction {
+                        factCached.deleteFromRealm()
+                    }
+                    fact.map(toBaseUi)
                 }
-                fact.map(toFavorite)
-            } else {
-                realm.executeTransaction {
-                    factCached.deleteFromRealm()
-                }
-                fact.map(toBaseUi)
             }
         }
 
-        override fun fetch(): FactResult {
-            val realm = realm.provideRealm()
-            val facts = realm.where(FactCache::class.java).findAll()
-            return if (facts.isEmpty())
-                FactResult.Failure(error)
-            else FactResult.Success(realm.copyFromRealm(facts.random()), true)
+        override suspend fun fetch(): FactResult {
+            realm.provideRealm().use { realm ->
+                val facts = realm.where(FactCache::class.java).findAll()
+                return if (facts.isEmpty())
+                    FactResult.Failure(error)
+                else FactResult.Success(realm.copyFromRealm(facts.random()), true)
+            }
         }
     }
 }
@@ -54,7 +56,7 @@ class Fake(manageResources: ManageResources) : CacheDataSource {
     private val map = mutableMapOf<Int, Fact>()
 
 
-    override fun addOrRemove(id: Int, fact: Fact): FactUi {
+    override suspend fun addOrRemove(id: Int, fact: Fact): FactUi {
         return if (map.containsKey(id)) {
             map.remove(id)
             fact.map(ToBaseUi())
@@ -66,7 +68,7 @@ class Fake(manageResources: ManageResources) : CacheDataSource {
 
     private var count = 0
 
-    override fun fetch(): FactResult {
+    override suspend fun fetch(): FactResult {
         return if (map.isEmpty())
             FactResult.Failure(error)
         else {
@@ -77,7 +79,7 @@ class Fake(manageResources: ManageResources) : CacheDataSource {
 }
 
 interface DataSource {
-    fun fetch(): FactResult
+    suspend fun fetch(): FactResult
 }
 
 interface FactResult : Fact {
@@ -96,7 +98,7 @@ interface FactResult : Fact {
 
         override fun errorMessage(): String = ""
 
-        override fun <T> map(mapper: Fact.Mapper<T>): T {
+        override suspend fun <T> map(mapper: Fact.Mapper<T>): T {
             return fact.map(mapper)
         }
     }
@@ -109,7 +111,8 @@ interface FactResult : Fact {
 
         override fun errorMessage(): String = error.message()
 
-        override fun <T> map(mapper: Fact.Mapper<T>): T = throw java.lang.IllegalStateException()
+        override suspend fun <T> map(mapper: Fact.Mapper<T>): T =
+            throw java.lang.IllegalStateException()
     }
 }
 

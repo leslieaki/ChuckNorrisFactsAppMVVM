@@ -35,20 +35,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.init(object : FactUiCallback {
-            override fun provideText(text: String) = runOnUiThread {
+            override fun provideText(text: String) {
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
                 textView.text = text
             }
 
-            override fun provideIconResId(iconResId: Int) = runOnUiThread {
+            override fun provideIconResId(iconResId: Int) {
                 binding.favoriteImageButton.setImageResource(iconResId)
             }
         })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.clear()
     }
 }

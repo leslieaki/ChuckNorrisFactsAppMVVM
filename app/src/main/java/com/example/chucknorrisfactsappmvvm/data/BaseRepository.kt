@@ -13,7 +13,7 @@ class BaseRepository(
 
     private var factTemporary: Fact? = null
 
-    override fun fetch(): FactResult {
+    override suspend fun fetch(): FactResult {
         val factResult = if (getFactFromCache)
             cacheDataSource.fetch()
         else
@@ -24,7 +24,7 @@ class BaseRepository(
         return factResult
     }
 
-    override fun changeFactStatus(): FactUi {
+    override suspend fun changeFactStatus(): FactUi {
         return factTemporary!!.map(change)
     }
 

@@ -5,9 +5,9 @@ import com.example.chucknorrisfactsappmvvm.presentation.FactUi
 
 interface Repository<S, E> {
 
-    fun fetch(): FactResult
+    suspend fun fetch(): FactResult
 
-    fun changeFactStatus(): FactUi
+    suspend fun changeFactStatus(): FactUi
 
     fun chooseFavorites(favorites: Boolean)
 }

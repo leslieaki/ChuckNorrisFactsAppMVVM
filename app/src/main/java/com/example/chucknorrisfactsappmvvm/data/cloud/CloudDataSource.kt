@@ -19,7 +19,7 @@ interface CloudDataSource : DataSource {
             com.example.chucknorrisfactsappmvvm.data.Error.ServiceUnavailable(manageResources)
         }
 
-        override fun fetch(): FactResult = try {
+        override suspend fun fetch(): FactResult = try {
             val response = factService.fact().execute()
             FactResult.Success(response.body()!!, false)
         } catch (e: Exception) {

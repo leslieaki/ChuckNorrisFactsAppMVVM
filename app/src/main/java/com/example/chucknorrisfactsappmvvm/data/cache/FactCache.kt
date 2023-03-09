@@ -15,5 +15,5 @@ open class FactCache : RealmObject(), Fact {
     var punchline: String = ""
     var type: String = ""
 
-    override fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, text, punchline, id)
+    override suspend fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, text, punchline, id)
 }
