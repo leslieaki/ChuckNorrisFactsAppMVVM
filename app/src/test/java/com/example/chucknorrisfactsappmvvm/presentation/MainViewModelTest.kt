@@ -51,6 +51,27 @@ class MainViewModelTest {
         assertEquals(1, factUiCallback.provideTextList.size)
         assertEquals(1, factUiCallback.provideIconResIdList.size)
     }
+
+    @Test
+
+    fun test_successful_favorite() {
+        repository.returnFetchFactResult =
+            FakeFactResult(
+                FakeFact("testType", "fakeText", "textPunchline", 15),
+                toFavorite = true,
+                successful = true,
+                errorMessage = ""
+            )
+        viewModel.getFact()
+        val expectedText = "fakeText\ntextPunchline"
+        val expectedId = 16
+
+        assertEquals(expectedText, factUiCallback.provideTextList[0])
+        assertEquals(expectedId, factUiCallback.provideIconResIdList[0])
+
+        assertEquals(1, factUiCallback.provideTextList.size)
+        assertEquals(1, factUiCallback.provideIconResIdList.size)
+    }
 }
 
 private class FakeFactUiCallback : MainViewModel.FactUiCallback {
@@ -94,12 +115,12 @@ private class FakeMapper(
 }
 
 private data class FakeFactUi(
-    val text: String,
-    val punchline: String,
-    val id: Int,
-    val toFavorite: Boolean
+    private val text: String,
+    private val punchline: String,
+    private val id: Int,
+    private val toFavorite: Boolean
 ) :
-    FactUi(text, punchline, 0)
+    FactUi(text, punchline, if (toFavorite) id + 1 else id)
 
 
 private data class FakeFact(
