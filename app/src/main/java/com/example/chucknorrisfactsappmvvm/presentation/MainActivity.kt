@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chucknorrisfactsappmvvm.data.FactApp
-import com.example.chucknorrisfactsappmvvm.databinding.ActivityMainBinding
+import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel.FactUiCallback
+import com.example.jokesappmvvm.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.getFact()
         }
 
-        viewModel.init(object : FactUiCallback {
+        val factUiCallback = object : FactUiCallback {
             override fun provideText(text: String) {
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             override fun provideIconResId(iconResId: Int) {
                 binding.favoriteImageButton.setImageResource(iconResId)
             }
-        })
+        }
+        viewModel.init(factUiCallback)
     }
 }

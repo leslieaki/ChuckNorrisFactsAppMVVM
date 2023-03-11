@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chucknorrisfactsappmvvm.data.*
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -11,8 +12,10 @@ import kotlinx.coroutines.withContext
 class MainViewModel(
     private val repository: Repository<FactUi, Error>,
     private val toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
-    private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
+    private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi(),
+    private val dispatchersList: DispatchersList = DispatchersList.Base()
 ) : ViewModel() {
+
     private var factUiCallback: FactUiCallback = FactUiCallback.Empty()
 
     fun init(factUiCallback: FactUiCallback) {
@@ -20,14 +23,14 @@ class MainViewModel(
     }
 
     fun getFact() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchersList.io()) {
             val result = repository.fetch()
             val ui = if (result.isSuccessful())
                 result.map(if (result.toFavorite()) toFavorite else toBaseUi)
             else
                 FactUi.Failed(result.errorMessage())
 
-            withContext(Dispatchers.Main) {
+            withContext(dispatchersList.ui()) {
                 ui.show(factUiCallback)
             }
         }
@@ -43,9 +46,9 @@ class MainViewModel(
     }
 
     fun changeFactStatus() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchersList.io()) {
             val factUi = repository.changeFactStatus()
-            withContext(Dispatchers.Main) {
+            withContext(dispatchersList.ui()) {
                 factUi.show(factUiCallback)
             }
         }
@@ -64,4 +67,18 @@ class MainViewModel(
             override fun provideIconResId(iconResId: Int) = Unit
         }
     }
+}
+
+interface DispatchersList {
+
+    fun io(): CoroutineDispatcher
+
+    fun ui(): CoroutineDispatcher
+
+    class Base : DispatchersList {
+        override fun io() = Dispatchers.IO
+
+        override fun ui() = Dispatchers.Main
+    }
+
 }

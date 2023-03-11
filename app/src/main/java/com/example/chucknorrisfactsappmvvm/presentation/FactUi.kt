@@ -1,7 +1,8 @@
 package com.example.chucknorrisfactsappmvvm.presentation
 
 import androidx.annotation.DrawableRes
-import com.example.chucknorrisfactsappmvvm.R
+import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel.FactUiCallback
+import com.example.jokesappmvvm.R
 
 abstract class FactUi(
     private val text: String,
