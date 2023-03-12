@@ -53,7 +53,6 @@ class MainViewModelTest {
     }
 
     @Test
-
     fun test_successful_favorite() {
         repository.returnFetchFactResult =
             FakeFactResult(
@@ -72,7 +71,54 @@ class MainViewModelTest {
         assertEquals(1, factUiCallback.provideTextList.size)
         assertEquals(1, factUiCallback.provideIconResIdList.size)
     }
+
+    @Test
+    fun test_not_successful() {
+        repository.returnFetchFactResult =
+            FakeFactResult(
+                FakeFact("testType", "fakeText", "textPunchline", 15),
+                toFavorite = true,
+                successful = false,
+                errorMessage = "testErrorMessage"
+            )
+        viewModel.getFact()
+        val expectedText = "testErrorMessage\n"
+        val expectedId = 0
+
+        assertEquals(expectedText, factUiCallback.provideTextList[0])
+        assertEquals(expectedId, factUiCallback.provideIconResIdList[0])
+
+        assertEquals(1, factUiCallback.provideTextList.size)
+        assertEquals(1, factUiCallback.provideIconResIdList.size)
+    }
+
+    @Test
+    fun test_change_fact_status() {
+        repository.returnChangeFactStatus = FakeFactUi("testText", "testPunchline", 20, false)
+        viewModel.changeFactStatus()
+
+        val expectedText = "testText\ntestPunchline"
+        val expectedId = 20
+
+        assertEquals(expectedText, factUiCallback.provideTextList[0])
+        assertEquals(expectedId, factUiCallback.provideIconResIdList[0])
+
+        assertEquals(1, factUiCallback.provideTextList.size)
+        assertEquals(1, factUiCallback.provideIconResIdList.size)
+    }
+
+    @Test
+    fun test_choose_favorite() {
+        viewModel.chooseFavorite(true)
+        assertEquals(true, repository.chooseFavoritesList[0])
+        assertEquals(1, repository.chooseFavoritesList.size)
+
+        viewModel.chooseFavorite(false)
+        assertEquals(false, repository.chooseFavoritesList[1])
+        assertEquals(2, repository.chooseFavoritesList.size)
+    }
 }
+
 
 private class FakeFactUiCallback : MainViewModel.FactUiCallback {
 
@@ -97,7 +143,6 @@ private class FakeDispatchers : DispatchersList {
 
 
     override fun ui(): CoroutineDispatcher = dispatcher
-
 }
 
 private class FakeMapper(
@@ -159,11 +204,16 @@ private class FakeRepository : Repository<FactUi, Error> {
         return returnFetchFactResult!!
     }
 
+    var returnChangeFactStatus: FactUi? = null
+
     override suspend fun changeFactStatus(): FactUi {
-        TODO("Not yet implemented")
+        return returnChangeFactStatus!!
     }
 
+    var chooseFavoritesList = mutableListOf<Boolean>()
+
     override fun chooseFavorites(favorites: Boolean) {
-        TODO("Not yet implemented")
+
+        chooseFavoritesList.add(favorites)
     }
 }
