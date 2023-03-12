@@ -79,6 +79,7 @@
 
 
         <LinearLayout
+            android:id="@+id/favoriteLayout"
             android:layout_marginTop="@dimen/margin_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,6 +90,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
+                android:visibility="invisible"
+                tools:visibility="visible"
                 android:background="@color/white"
                 android:contentDescription="@string/icon_favorite"
                 android:src="@drawable/ic_favorite_unselected_24" />

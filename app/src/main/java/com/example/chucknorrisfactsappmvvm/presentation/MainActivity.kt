@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             button.isEnabled = false
             binding.progressBar.visibility = View.VISIBLE
+            binding.favoriteImageButton.visibility = View.VISIBLE
             viewModel.getFact()
         }
 
