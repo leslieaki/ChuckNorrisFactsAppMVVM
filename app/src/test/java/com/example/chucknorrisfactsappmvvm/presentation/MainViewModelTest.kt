@@ -6,6 +6,8 @@ import com.example.chucknorrisfactsappmvvm.data.Fact
 import com.example.chucknorrisfactsappmvvm.data.Repository
 import com.example.chucknorrisfactsappmvvm.data.cache.FactResult
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -28,7 +30,12 @@ class MainViewModelTest {
         factUiCallback = FakeFactUiCallback()
         dispatchersList = FakeDispatchers()
 
-        viewModel = MainViewModel(repository, toFavoriteMapper, toBaseMapper, dispatchersList)
+        viewModel = MainViewModel(
+            repository,
+            toFavoriteMapper,
+            toBaseMapper,
+            FakeHandleUi(dispatchersList)
+        )
         viewModel.init(factUiCallback)
     }
 
@@ -119,6 +126,17 @@ class MainViewModelTest {
     }
 }
 
+private class FakeHandleUi(private val dispatchersList: DispatchersList) : HandleUi {
+    override fun handle(
+        coroutineScope: CoroutineScope,
+        factUiCallback: MainViewModel.FactUiCallback,
+        block: suspend () -> FactUi
+    ) {
+        coroutineScope.launch(dispatchersList.io()) {
+            block.invoke().show(factUiCallback)
+        }
+    }
+}
 
 private class FakeFactUiCallback : MainViewModel.FactUiCallback {
 
