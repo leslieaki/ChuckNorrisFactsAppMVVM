@@ -42,7 +42,7 @@ class MainViewModelTest {
                 errorMessage = ""
             )
         viewModel.getFact()
-        val expectedText = "fakeText\ntextPunchline"
+        val expectedText = "fakeText_textPunchline"
         val expectedId = 5
 
         assertEquals(expectedText, factUiCallback.provideTextList[0])
@@ -62,7 +62,7 @@ class MainViewModelTest {
                 errorMessage = ""
             )
         viewModel.getFact()
-        val expectedText = "fakeText\ntextPunchline"
+        val expectedText = "fakeText_textPunchline"
         val expectedId = 16
 
         assertEquals(expectedText, factUiCallback.provideTextList[0])
@@ -97,7 +97,7 @@ class MainViewModelTest {
         repository.returnChangeFactStatus = FakeFactUi("testText", "testPunchline", 20, false)
         viewModel.changeFactStatus()
 
-        val expectedText = "testText\ntestPunchline"
+        val expectedText = "testText_testPunchline"
         val expectedId = 20
 
         assertEquals(expectedText, factUiCallback.provideTextList[0])
@@ -164,8 +164,13 @@ private data class FakeFactUi(
     private val punchline: String,
     private val id: Int,
     private val toFavorite: Boolean
-) :
-    FactUi(text, punchline, if (toFavorite) id + 1 else id)
+) : FactUi {
+
+    override fun show(factUiCallback: MainViewModel.FactUiCallback) = with(factUiCallback) {
+        provideText(text + "_" + punchline)
+        provideIconResId(if (toFavorite) id + 1 else id)
+    }
+}
 
 
 private data class FakeFact(
