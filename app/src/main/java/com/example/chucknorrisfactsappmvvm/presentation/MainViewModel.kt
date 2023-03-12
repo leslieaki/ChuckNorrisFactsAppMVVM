@@ -4,27 +4,34 @@ import androidx.annotation.DrawableRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chucknorrisfactsappmvvm.data.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val repository: Repository<FactUi, Error>,
     private val toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
     private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi(),
-    private val handleUi: HandleUi = HandleUi.Base(DispatchersList.Base())
-) : ViewModel() {
+    dispatchersList: DispatchersList = DispatchersList.Base(),
+) : BaseViewModel(dispatchersList = dispatchersList) {
 
     private var factUiCallback: FactUiCallback = FactUiCallback.Empty()
+
+    private val blockUi: suspend (FactUi) -> Unit = { it.show(factUiCallback) }
 
     fun init(factUiCallback: FactUiCallback) {
         this.factUiCallback = factUiCallback
     }
 
-    fun getFact() = handleUi.handle(viewModelScope, factUiCallback) {
-        val result = repository.fetch()
-        if (result.isSuccessful())
-            result.map(if (result.toFavorite()) toFavorite else toBaseUi)
-        else
-            FactUi.Failed(result.errorMessage())
+    fun getFact() {
+        handle({
+            val result = repository.fetch()
+            if (result.isSuccessful())
+                result.map(if (result.toFavorite()) toFavorite else toBaseUi)
+            else
+                FactUi.Failed(result.errorMessage())
+        }, blockUi)
     }
 
     override fun onCleared() {
@@ -36,25 +43,24 @@ class MainViewModel(
         repository.chooseFavorites(favorites)
     }
 
-    fun changeFactStatus() = handleUi.handle(viewModelScope, factUiCallback) {
-        repository.changeFactStatus()
-    }
-
-    interface FactUiCallback {
-
-        fun provideText(text: String)
-
-        fun provideIconResId(@DrawableRes iconResId: Int)
-
-        class Empty : FactUiCallback {
-
-            override fun provideText(text: String) = Unit
-
-            override fun provideIconResId(iconResId: Int) = Unit
-        }
+    fun changeFactStatus() {
+        handle({ repository.changeFactStatus() }, blockUi)
     }
 }
 
+interface FactUiCallback {
+
+    fun provideText(text: String)
+
+    fun provideIconResId(@DrawableRes iconResId: Int)
+
+    class Empty : FactUiCallback {
+
+        override fun provideText(text: String) = Unit
+
+        override fun provideIconResId(iconResId: Int) = Unit
+    }
+}
 
 interface DispatchersList {
 
@@ -69,26 +75,16 @@ interface DispatchersList {
     }
 }
 
-interface HandleUi {
-
-    fun handle(
-        coroutineScope: CoroutineScope,
-        factUiCallback: MainViewModel.FactUiCallback,
-        block: suspend () -> FactUi
-    )
-
-    class Base(private val dispatchersList: DispatchersList) : HandleUi {
-        override fun handle(
-            coroutineScope: CoroutineScope,
-            factUiCallback: MainViewModel.FactUiCallback,
-            block: suspend () -> FactUi
-        ) {
-            coroutineScope.launch(dispatchersList.io()) {
-                val factUi = block.invoke()
-                withContext(dispatchersList.ui()) {
-                    factUi.show(factUiCallback)
-                }
-            }
+abstract class BaseViewModel(
+    private val dispatchersList: DispatchersList
+) : ViewModel() {
+    fun <T> handle(
+        blockIo: suspend () -> T,
+        blockUi: suspend (T) -> Unit
+    ) = viewModelScope.launch(dispatchersList.io()) {
+        val result = blockIo.invoke()
+        withContext(dispatchersList.ui()) {
+            blockUi.invoke(result)
         }
     }
 }

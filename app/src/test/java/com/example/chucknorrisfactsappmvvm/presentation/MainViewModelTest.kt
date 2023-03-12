@@ -6,8 +6,6 @@ import com.example.chucknorrisfactsappmvvm.data.Fact
 import com.example.chucknorrisfactsappmvvm.data.Repository
 import com.example.chucknorrisfactsappmvvm.data.cache.FactResult
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -34,7 +32,7 @@ class MainViewModelTest {
             repository,
             toFavoriteMapper,
             toBaseMapper,
-            FakeHandleUi(dispatchersList)
+            dispatchersList
         )
         viewModel.init(factUiCallback)
     }
@@ -126,19 +124,7 @@ class MainViewModelTest {
     }
 }
 
-private class FakeHandleUi(private val dispatchersList: DispatchersList) : HandleUi {
-    override fun handle(
-        coroutineScope: CoroutineScope,
-        factUiCallback: MainViewModel.FactUiCallback,
-        block: suspend () -> FactUi
-    ) {
-        coroutineScope.launch(dispatchersList.io()) {
-            block.invoke().show(factUiCallback)
-        }
-    }
-}
-
-private class FakeFactUiCallback : MainViewModel.FactUiCallback {
+private class FakeFactUiCallback : FactUiCallback {
 
     val provideTextList = mutableListOf<String>()
 
@@ -184,7 +170,7 @@ private data class FakeFactUi(
     private val toFavorite: Boolean
 ) : FactUi {
 
-    override fun show(factUiCallback: MainViewModel.FactUiCallback) = with(factUiCallback) {
+    override fun show(factUiCallback: FactUiCallback) = with(factUiCallback) {
         provideText(text + "_" + punchline)
         provideIconResId(if (toFavorite) id + 1 else id)
     }
