@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chucknorrisfactsappmvvm.data.FactApp
-import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel.FactUiCallback
 import com.example.jokesappmvvm.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
