@@ -10,10 +10,13 @@ import io.realm.annotations.PrimaryKey
 
 open class FactCache : RealmObject(), Fact {
     @PrimaryKey
-    var id: Int = -1
-    var text: String = ""
-    var punchline: String = ""
-    var type: String = ""
+    var createdDate: String = ""
+    var iconUrl: String = ""
+    var id: String = ""
+    var updateDate: String = ""
+    var url: String = ""
+    var value: String = ""
 
-    override suspend fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, text, punchline, id)
+    override suspend fun <T> map(mapper: Fact.Mapper<T>): T =
+        mapper.map(createdDate, iconUrl, id, updateDate, url, value)
 }

@@ -8,24 +8,23 @@ interface FactUi {
     fun show(factUiCallback: FactUiCallback)
 
     abstract class Abstract(
-        private val text: String,
-        private val punchline: String,
+        private val value: String,
 
         @DrawableRes
         private val iconResId: Int
     ) : FactUi {
 
         override fun show(factUiCallback: FactUiCallback) = with(factUiCallback) {
-            provideText("$text\n$punchline")
+            provideText(value)
             provideIconResId(iconResId)
         }
     }
 
-    class Base(text: String, punchline: String) :
-        Abstract(text, punchline, R.drawable.ic_favorite_unselected_24)
+    class Base(value: String) :
+        Abstract(value, R.drawable.ic_favorite_unselected_24)
 
-    class Favorite(text: String, punchline: String) :
-        Abstract(text, punchline, R.drawable.ic_favorite_selected_24)
+    class Favorite(value: String) :
+        Abstract(value, R.drawable.ic_favorite_selected_24)
 
-    class Failed(text: String) : Abstract(text, "", 0)
+    class Failed(value: String) : Abstract(value, 0)
 }

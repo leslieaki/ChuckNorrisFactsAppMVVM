@@ -7,7 +7,7 @@ import io.realm.Realm
 
 interface CacheDataSource : DataSource {
 
-    suspend fun addOrRemove(id: Int, fact: Fact): FactUi
+    suspend fun addOrRemove(id: String, fact: Fact): FactUi
 
     class Base(
         private val realm: ProvideRealm,
@@ -18,7 +18,7 @@ interface CacheDataSource : DataSource {
         private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi()
     ) : CacheDataSource {
 
-        override suspend fun addOrRemove(id: Int, fact: Fact): FactUi {
+        override suspend fun addOrRemove(id: String, fact: Fact): FactUi {
             realm.provideRealm().use { realm ->
                 val factCached = realm.where(FactCache::class.java).equalTo("id", id).findFirst()
                 return if (factCached == null) {

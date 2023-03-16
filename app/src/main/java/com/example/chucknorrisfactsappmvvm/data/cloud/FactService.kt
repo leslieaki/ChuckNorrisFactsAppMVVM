@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface FactService {
 
-    @GET("random_joke")
+    @GET("random")
     fun fact(): Call<FactCloud>
 }

@@ -9,50 +9,73 @@ interface Fact {
 
     interface Mapper<T> {
         suspend fun map(
-            type: String,
-            setup: String,
-            punchline: String,
-            id: Int
+            createdDate: String,
+            iconUrl: String,
+            id: String,
+            updateDate: String,
+            url: String,
+            value: String
         ): T
     }
 }
 
 data class FactDomain(
-    private val type: String,
-    private val setup: String,
-    private val punchline: String,
-    private val id: Int,
+    private val createdDate: String,
+    private val iconUrl: String,
+    private val id: String,
+    private val updateDate: String,
+    private val url: String,
+    private val value: String
 ) : Fact {
 
-    override suspend fun <T> map(mapper: Fact.Mapper<T>): T = mapper.map(type, setup, punchline, id)
+    override suspend fun <T> map(mapper: Fact.Mapper<T>): T =
+        mapper.map(createdDate, iconUrl, id, updateDate, url, value)
 }
 
 class ToCache : Fact.Mapper<FactCache> {
 
     override suspend fun map(
-        type: String,
-        setup: String,
-        punchline: String,
-        id: Int
+        createdDate: String,
+        iconUrl: String,
+        id: String,
+        updateDate: String,
+        url: String,
+        value: String
     ): FactCache {
         val factCache = FactCache()
+        factCache.createdDate = createdDate
+        factCache.iconUrl = iconUrl
         factCache.id = id
-        factCache.text = setup
-        factCache.punchline = punchline
-        factCache.type = type
+        factCache.updateDate = updateDate
+        factCache.url = url
+        factCache.value = value
         return factCache
     }
 }
 
 class ToBaseUi : Fact.Mapper<FactUi> {
-    override suspend fun map(type: String, setup: String, punchline: String, id: Int): FactUi {
-        return FactUi.Base(setup, punchline)
+    override suspend fun map(
+        createdDate: String,
+        iconUrl: String,
+        id: String,
+        updateDate: String,
+        url: String,
+        value: String
+    ): FactUi {
+        return FactUi.Base(value)
     }
 }
 
 class ToFavoriteUi : Fact.Mapper<FactUi> {
-    override suspend fun map(type: String, setup: String, punchline: String, id: Int): FactUi {
-        return FactUi.Favorite(setup, punchline)
+    override suspend fun map(
+        createdDate: String,
+        iconUrl: String,
+        id: String,
+        updateDate: String,
+        url: String,
+        value: String
+    ): FactUi {
+        return FactUi.Favorite(value)
     }
 }
 
@@ -60,14 +83,29 @@ class Change(
     private val cacheDataSource: CacheDataSource,
     private val toDomain: Fact.Mapper<FactDomain> = ToDomain()
 ) : Fact.Mapper<FactUi> {
-    override suspend fun map(type: String, setup: String, punchline: String, id: Int): FactUi {
-        return cacheDataSource.addOrRemove(id, toDomain.map(type, setup, punchline, id))
+    override suspend fun map(
+        createdDate: String,
+        iconUrl: String,
+        id: String,
+        updateDate: String,
+        url: String,
+        value: String
+    ): FactUi {
+        return cacheDataSource.addOrRemove(
+            id, toDomain.map(createdDate, iconUrl, id, updateDate, url, value)
+        )
     }
 }
 
 class ToDomain : Fact.Mapper<FactDomain> {
-    override suspend fun map(type: String, setup: String, punchline: String, id: Int): FactDomain {
-        return FactDomain(type, setup, punchline, id)
+    override suspend fun map(
+        createdDate: String,
+        iconUrl: String,
+        id: String,
+        updateDate: String,
+        url: String,
+        value: String
+    ): FactDomain {
+        return FactDomain(createdDate, iconUrl, id, updateDate, url, value)
     }
-
 }

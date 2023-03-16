@@ -19,7 +19,7 @@ class FactApp : Application() {
         super.onCreate()
         Realm.init(this)
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://official-joke-api.appspot.com/")
+            .baseUrl("https://api.chucknorris.io/jokes/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val manageResources = ManageResources.Base(this)
