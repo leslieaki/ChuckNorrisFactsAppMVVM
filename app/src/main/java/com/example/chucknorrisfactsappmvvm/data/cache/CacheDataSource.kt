@@ -47,37 +47,6 @@ interface CacheDataSource : DataSource {
     }
 }
 
-class Fake(manageResources: ManageResources) : CacheDataSource {
-
-    private val error: Error by lazy {
-        Error.NoFavoriteFact(manageResources)
-    }
-
-    private val map = mutableMapOf<Int, Fact>()
-
-
-    override suspend fun addOrRemove(id: Int, fact: Fact): FactUi {
-        return if (map.containsKey(id)) {
-            map.remove(id)
-            fact.map(ToBaseUi())
-        } else {
-            map[id] = fact
-            fact.map(ToFavoriteUi())
-        }
-    }
-
-    private var count = 0
-
-    override suspend fun fetch(): FactResult {
-        return if (map.isEmpty())
-            FactResult.Failure(error)
-        else {
-            if (++count == map.size) count = 0
-            FactResult.Success(map.toList()[count].second, true)
-        }
-    }
-}
-
 interface DataSource {
     suspend fun fetch(): FactResult
 }

@@ -1,5 +1,6 @@
 package com.example.chucknorrisfactsappmvvm.data.cloud
 
+import com.example.chucknorrisfactsappmvvm.data.Error
 import com.example.chucknorrisfactsappmvvm.data.cache.DataSource
 import com.example.chucknorrisfactsappmvvm.data.cache.FactResult
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
@@ -13,10 +14,10 @@ interface CloudDataSource : DataSource {
     ) : CloudDataSource {
 
         private val noConnection by lazy {
-            com.example.chucknorrisfactsappmvvm.data.Error.NoConnection(manageResources)
+            Error.NoConnection(manageResources)
         }
         private val serviceError by lazy {
-            com.example.chucknorrisfactsappmvvm.data.Error.ServiceUnavailable(manageResources)
+            Error.ServiceUnavailable(manageResources)
         }
 
         override suspend fun fetch(): FactResult = try {
