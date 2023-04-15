@@ -1,6 +1,8 @@
 package com.example.chucknorrisfactsappmvvm.presentation
 
 import androidx.annotation.DrawableRes
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chucknorrisfactsappmvvm.data.*
@@ -10,19 +12,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainViewModel(
+    private val factLiveDataWrapper: FactLiveDataWrapper,
     private val repository: Repository<FactUi, Error>,
     private val toFavorite: Fact.Mapper<FactUi> = ToFavoriteUi(),
     private val toBaseUi: Fact.Mapper<FactUi> = ToBaseUi(),
     dispatchersList: DispatchersList = DispatchersList.Base(),
-) : BaseViewModel(dispatchersList = dispatchersList) {
+) : BaseViewModel(dispatchersList = dispatchersList), Observe<FactUi> {
 
-    private var factUiCallback: FactUiCallback = FactUiCallback.Empty()
-
-    private val blockUi: suspend (FactUi) -> Unit = { it.show(factUiCallback) }
-
-    fun init(factUiCallback: FactUiCallback) {
-        this.factUiCallback = factUiCallback
+    private val blockUi: suspend (FactUi) -> Unit = {
+        factLiveDataWrapper.map(it)
     }
+
+    override fun observe(owner: LifecycleOwner, observer: Observer<FactUi>) =
+        factLiveDataWrapper.observe(owner, observer)
 
     fun getFact() {
         handle({
@@ -32,11 +34,6 @@ class MainViewModel(
             else
                 FactUi.Failed(result.errorMessage())
         }, blockUi)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        factUiCallback = FactUiCallback.Empty()
     }
 
     fun chooseFavorite(favorites: Boolean) {
@@ -53,13 +50,6 @@ interface FactUiCallback {
     fun provideText(text: String)
 
     fun provideIconResId(@DrawableRes iconResId: Int)
-
-    class Empty : FactUiCallback {
-
-        override fun provideText(text: String) = Unit
-
-        override fun provideIconResId(iconResId: Int) = Unit
-    }
 }
 
 interface DispatchersList {

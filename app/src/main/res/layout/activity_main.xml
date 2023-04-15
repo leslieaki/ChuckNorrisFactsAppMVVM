@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_horizontal_large_size"
+            android:layout_margin="@dimen/margin_medium"
             android:fontFamily="@font/sans_pro_bold"
             android:gravity="center"
             android:text="@string/wanna_get_some_interesting_fact_about_chuck_norris"
@@ -80,7 +80,6 @@
 
         <LinearLayout
             android:id="@+id/favoriteLayout"
-            android:layout_marginTop="@dimen/margin_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">

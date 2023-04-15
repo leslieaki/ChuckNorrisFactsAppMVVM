@@ -20,11 +20,11 @@ interface FactUi {
         }
     }
 
-    class Base(value: String) :
+    data class Base(private val value: String) :
         Abstract(value, R.drawable.ic_favorite_unselected_24)
 
-    class Favorite(value: String) :
+    data class Favorite(private val value: String) :
         Abstract(value, R.drawable.ic_favorite_selected_24)
 
-    class Failed(value: String) : Abstract(value, 0)
+    data class Failed(private val value: String) : Abstract(value, 0)
 }

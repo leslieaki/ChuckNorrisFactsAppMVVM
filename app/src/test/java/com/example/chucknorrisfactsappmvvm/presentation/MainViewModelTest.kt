@@ -34,7 +34,6 @@ class MainViewModelTest {
             toBaseMapper,
             dispatchersList
         )
-        viewModel.init(factUiCallback)
     }
 
     @Test
@@ -154,37 +153,44 @@ private class FakeMapper(
 ) : Fact.Mapper<FactUi> {
 
     override suspend fun map(
-        type: String,
-        setup: String,
-        punchline: String,
-        id: Int
+        createdDate: String,
+        iconUrl: String,
+        id: String,
+        updateDate: String,
+        url: String,
+        value: String
     ): FactUi {
-        return FakeFactUi(setup, punchline, id, toFavorite)
+        return FakeFactUi(createdDate, iconUrl, id, updateDate, url, value, toFavorite)
     }
 }
 
 private data class FakeFactUi(
-    private val text: String,
-    private val punchline: String,
-    private val id: Int,
+    private val createdDate: String,
+    private val iconUrl: String,
+    private val id: String,
+    private val updateDate: String,
+    private val url: String,
+    private val value: String,
     private val toFavorite: Boolean
 ) : FactUi {
 
     override fun show(factUiCallback: FactUiCallback) = with(factUiCallback) {
-        provideText(text + "_" + punchline)
+        provideText(value)
         provideIconResId(if (toFavorite) id + 1 else id)
     }
 }
 
 
 private data class FakeFact(
-    private val type: String,
-    private val setup: String,
-    private val punchline: String,
-    private val id: Int
+    private val createdDate: String,
+    private val iconUrl: String,
+    private val id: String,
+    private val updateDate: String,
+    private val url: String,
+    private val value: String
 ) : Fact {
     override suspend fun <T> map(mapper: Fact.Mapper<T>): T {
-        return mapper.map(type, setup, punchline, id)
+        return mapper.map(createdDate, iconUrl, id, updateDate, url, value)
     }
 }
 

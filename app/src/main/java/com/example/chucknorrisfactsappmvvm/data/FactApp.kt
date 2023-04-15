@@ -5,6 +5,7 @@ import com.example.chucknorrisfactsappmvvm.data.cache.CacheDataSource
 import com.example.chucknorrisfactsappmvvm.data.cache.ProvideRealm
 import com.example.chucknorrisfactsappmvvm.data.cloud.CloudDataSource
 import com.example.chucknorrisfactsappmvvm.data.cloud.FactService
+import com.example.chucknorrisfactsappmvvm.presentation.FactLiveDataWrapper
 import com.example.chucknorrisfactsappmvvm.presentation.MainViewModel
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
 import io.realm.Realm
@@ -24,6 +25,7 @@ class FactApp : Application() {
             .build()
         val manageResources = ManageResources.Base(this)
         viewModel = MainViewModel(
+            FactLiveDataWrapper.Base(),
             BaseRepository(
                 CloudDataSource.Base(
                     retrofit.create(FactService::class.java),

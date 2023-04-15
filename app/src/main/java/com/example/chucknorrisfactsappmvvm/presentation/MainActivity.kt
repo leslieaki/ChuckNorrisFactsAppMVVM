@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = (application as FactApp).viewModel
 
+
         binding.showFavoriteCheckbox.setOnCheckedChangeListener { _, isChecked ->
             viewModel.chooseFavorite(isChecked)
         }
@@ -31,12 +32,12 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             button.isEnabled = false
             binding.progressBar.visibility = View.VISIBLE
-            binding.favoriteImageButton.visibility = View.VISIBLE
             viewModel.getFact()
         }
 
         val factUiCallback = object : FactUiCallback {
             override fun provideText(text: String) {
+                binding.favoriteImageButton.visibility = View.VISIBLE
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
                 textView.text = text
@@ -46,6 +47,8 @@ class MainActivity : AppCompatActivity() {
                 binding.favoriteImageButton.setImageResource(iconResId)
             }
         }
-        viewModel.init(factUiCallback)
+        viewModel.observe(this) {
+            it.show(factUiCallback)
+        }
     }
 }
