@@ -1,5 +1,5 @@
 # ChuckNorrisFactsAppMVVM
-Stack: RETROFIT2, REALM, COROUTINES
+Stack: Retrofit2, Realm, Coroutines
 
 App which provides you interesting facts about famous cinema character Chuck Norris. All the wishes!
 
