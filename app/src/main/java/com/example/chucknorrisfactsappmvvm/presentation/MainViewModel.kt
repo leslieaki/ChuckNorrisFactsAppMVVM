@@ -1,15 +1,10 @@
 package com.example.chucknorrisfactsappmvvm.presentation
 
-import androidx.annotation.DrawableRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.chucknorrisfactsappmvvm.data.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val factLiveDataWrapper: FactLiveDataWrapper,
@@ -42,39 +37,5 @@ class MainViewModel(
 
     fun changeFactStatus() {
         handle({ repository.changeFactStatus() }, blockUi)
-    }
-}
-
-interface FactUiCallback {
-
-    fun provideText(text: String)
-
-    fun provideIconResId(@DrawableRes iconResId: Int)
-}
-
-interface DispatchersList {
-
-    fun io(): CoroutineDispatcher
-
-    fun ui(): CoroutineDispatcher
-
-    class Base : DispatchersList {
-        override fun io() = Dispatchers.IO
-
-        override fun ui() = Dispatchers.Main
-    }
-}
-
-abstract class BaseViewModel(
-    private val dispatchersList: DispatchersList
-) : ViewModel() {
-    fun <T> handle(
-        blockIo: suspend () -> T,
-        blockUi: suspend (T) -> Unit
-    ) = viewModelScope.launch(dispatchersList.io()) {
-        val result = blockIo.invoke()
-        withContext(dispatchersList.ui()) {
-            blockUi.invoke(result)
-        }
     }
 }
