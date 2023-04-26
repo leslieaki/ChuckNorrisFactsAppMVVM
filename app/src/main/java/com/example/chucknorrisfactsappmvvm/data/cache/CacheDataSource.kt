@@ -47,10 +47,6 @@ interface CacheDataSource : DataSource {
     }
 }
 
-interface DataSource {
-    suspend fun fetch(): FactResult
-}
-
 interface ProvideRealm {
     fun provideRealm(): Realm
 }
