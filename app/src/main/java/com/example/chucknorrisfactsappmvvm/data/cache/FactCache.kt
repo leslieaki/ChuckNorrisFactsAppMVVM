@@ -4,10 +4,6 @@ import com.example.chucknorrisfactsappmvvm.data.Fact
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
-/*
-* No OOP with Realm :(
-**/
-
 open class FactCache : RealmObject(), Fact {
     @PrimaryKey
     var createdDate: String = ""
