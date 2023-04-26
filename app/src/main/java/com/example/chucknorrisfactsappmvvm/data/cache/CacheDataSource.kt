@@ -3,7 +3,6 @@ package com.example.chucknorrisfactsappmvvm.data.cache
 import com.example.chucknorrisfactsappmvvm.data.*
 import com.example.chucknorrisfactsappmvvm.presentation.FactUi
 import com.example.chucknorrisfactsappmvvm.presentation.ManageResources
-import io.realm.Realm
 
 interface CacheDataSource : DataSource {
 
@@ -45,8 +44,4 @@ interface CacheDataSource : DataSource {
             }
         }
     }
-}
-
-interface ProvideRealm {
-    fun provideRealm(): Realm
 }
